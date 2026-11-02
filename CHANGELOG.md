@@ -4,6 +4,12 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.5.1] — 2026-11-02
+
+### Cambiado
+- Armonía cálida de superficies: encabezados de tabla, filas alternadas y pies pasan de gris frío a
+  crema (`#EFE9DC`, `#FBF7EE`, `#FCF9F2`); sombras y placeholders en tonos topo.
+
 ## [1.5.0] — 2026-11-02
 
 ### Cambiado
