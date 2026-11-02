@@ -7,7 +7,7 @@ sobre los conjuntos de datos abiertos publicados por el organismo.
 Es un sitio estático: no requiere backend, servidor de aplicaciones ni base de datos. La búsqueda, el
 filtrado y la paginación se resuelven íntegramente en el navegador.
 
-Versión actual: **1.3.0**
+Versión actual: **1.4.0**
 
 ![Vista de escritorio de PamiGo](docs/preview.png)
 
@@ -49,6 +49,10 @@ Versión actual: **1.3.0**
 - Integración con el historial del navegador (botón atrás y adelante).
 - Redirección 301 desde `/pami.html` y desde cualquier `.html` hacia su versión sin extensión.
 - Página 404 personalizada con la identidad de la aplicación.
+
+### Trazabilidad de los datos
+- Cada vista indica en su barra de resultados la fecha oficial del conjunto que muestra.
+- El pie resume la fecha de los tres conjuntos, y `data/meta.json` guarda origen y volumen de cada uno.
 
 ### Interfaz y accesibilidad
 - Diseño responsive verificado en 320, 390, 768 y 1280 px.

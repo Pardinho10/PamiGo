@@ -4,6 +4,12 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.4.0] — 2026-11-02
+
+### Añadido
+- La barra de resultados de cada vista indica la fecha oficial del conjunto que está mostrando, además del
+  resumen por conjunto que ya figuraba en el pie.
+
 ## [1.3.0] — 2026-11-02
 
 ### Añadido

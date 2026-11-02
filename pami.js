@@ -20,6 +20,7 @@ function pamiApp() {
     medCoberturas: [],
     medCount: 0,
     dataUpdated: '',
+    fechas: { medicamentos: '', farmacias: '', prestadores: '' },
     medPage: 1,
     medPageSize: 20,
     medTotalPages: 1,
@@ -59,14 +60,15 @@ function pamiApp() {
         const res = await fetch('./data/meta.json', { cache: 'no-store' });
         if (!res.ok) return;
         const meta = await res.json();
-        const etiquetas = { medicamentos: 'medicamentos', farmacias: 'farmacias', prestadores: 'prestadores' };
         const partes = [];
-        for (const clave of Object.keys(etiquetas)) {
+        for (const clave of Object.keys(this.fechas)) {
           const fecha = meta[clave] && meta[clave].actualizado;
           if (!fecha) continue;
           const [anio, mes, dia] = String(fecha).split('-');
           if (!anio || !mes || !dia) continue;
-          partes.push(`${etiquetas[clave]} al ${dia}/${mes}/${anio}`);
+          const legible = `${dia}/${mes}/${anio}`;
+          this.fechas[clave] = legible;
+          partes.push(`${clave} al ${legible}`);
         }
         this.dataUpdated = partes.join(' · ');
       } catch (e) {

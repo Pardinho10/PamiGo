@@ -421,6 +421,16 @@ body::before {
   color: var(--muted);
 }
 
+.panel-meta .data-date {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.panel-meta .data-date span {
+  color: var(--navy);
+  font-weight: 700;
+}
+
 .panel-meta .count {
   font-weight: 900;
   color: var(--navy);
