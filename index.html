@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PamiGo — Medicamentos, prestadores y farmacias</title>
+  <meta name="description"
+    content="PamiGo: consultá cobertura, copago, prestadores y farmacias habilitadas de PAMI con datos oficiales de datos.gob.ar.">
+  <meta name="theme-color" content="#0B2344">
+  <meta name="application-name" content="PamiGo">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="/">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="apple-touch-icon" href="./favicon.svg">
+  <link rel="manifest" href="./site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./pami.css?v=1.0.0">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body>
+  <div class="container app-shell" x-data="pamiApp()" x-init="init()" x-cloak>
+
+    <!-- ===================== HERO ===================== -->
+    <header class="hero">
+      <div class="row g-4 align-items-center">
+
+        <div class="col-12 col-lg-7">
+          <div class="brand">
+            <svg class="brand-mark" viewBox="0 0 48 48" role="img" aria-label="PamiGo">
+              <defs>
+                <linearGradient id="pgHero" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#916EAF" />
+                  <stop offset="1" stop-color="#45658D" />
+                </linearGradient>
+                <clipPath id="pgHeroPill">
+                  <rect x="10" y="17" width="28" height="14" rx="7" />
+                </clipPath>
+              </defs>
+              <rect width="48" height="48" rx="10" fill="url(#pgHero)" />
+              <g transform="rotate(-45 24 24)">
+                <rect x="10" y="17" width="28" height="14" rx="7" fill="#FFFFFF" />
+                <rect x="10" y="17" width="14" height="14" fill="#F8951D" clip-path="url(#pgHeroPill)" />
+              </g>
+            </svg>
+            <div>
+              <h1 class="brand-name">PamiGo<span class="dot">.</span></h1>
+              <p class="brand-tag">Medicamentos · Prestadores · Farmacias</p>
+            </div>
+          </div>
+
+          <p class="hero-lead">
+            Consultá cobertura, copago, resumen de prestadores y farmacias habilitadas en un solo lugar.
+          </p>
+
+          <div class="hero-badges">
+            <span class="brand-badge">
+              <i class="bi bi-shield-check"></i>
+              Datos oficiales PAMI
+            </span>
+            <span class="brand-badge is-ghost">
+              <i class="bi bi-database"></i>
+              Fuente: datos.gob.ar
+            </span>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-5">
+          <div class="stats">
+            <div class="stat">
+              <span class="stat-value" x-text="medCount.toLocaleString('es-AR')"></span>
+              <span class="stat-label">Medicamentos</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" x-text="farmCount.toLocaleString('es-AR')"></span>
+              <span class="stat-label">Farmacias</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" x-text="prestCount.toLocaleString('es-AR')"></span>
+              <span class="stat-label">Prestadores</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ===================== TABS ===================== -->
+    <div class="tabs-wrap">
+      <ul class="nav nav-pills-custom" id="pamiTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="med-tab" data-bs-toggle="pill" data-bs-target="#medicamentos"
+            type="button" role="tab">
+            <i class="bi bi-capsule"></i>
+            Medicamentos
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="farm-tab" data-bs-toggle="pill" data-bs-target="#farmacias" type="button"
+            role="tab">
+            <i class="bi bi-bag-heart"></i>
+            Farmacias
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="prest-tab" data-bs-toggle="pill" data-bs-target="#prestadores" type="button"
+            role="tab">
+            <i class="bi bi-people"></i>
+            Prestadores
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="cartilla-tab" data-bs-toggle="pill" data-bs-target="#cartilla" type="button"
+            role="tab">
+            <i class="bi bi-journal-medical"></i>
+            Cartilla oficial
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tab-content">
+
+      <!-- ===================== MEDICAMENTOS ===================== -->
+      <div class="tab-pane fade show active" id="medicamentos" role="tabpanel">
+        <section class="panel">
+          <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label" for="medDroga">Principio activo (droga)</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input class="form-control" id="medDroga" type="search" placeholder="Ej.: PARACETAMOL, LOSARTAN…"
+                  x-model="medQueryDroga" @input="filterMeds()">
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label" for="medMarca">Marca</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                <input class="form-control" id="medMarca" type="search" placeholder="Ej.: SINTALGIN, XARELTO…"
+                  x-model="medQueryMarca" @input="filterMeds()">
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-2">
+              <label class="form-label" for="medTipo">Tipo / cobertura</label>
+              <input class="form-control" id="medTipo" type="search" placeholder="Ej.: 50%, 100%"
+                x-model="medQueryTipo" @input="filterMeds()">
+            </div>
+            <div class="col-12 col-md-6 col-lg-2 d-grid">
+              <button class="btn btn-ghost" type="button" @click="clearMeds()">
+                <i class="bi bi-arrow-clockwise me-1"></i>
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-meta">
+            <p>
+              Mostrando <span class="count" x-text="medPaged.length"></span>
+              de <span class="count" x-text="medFiltered.length"></span> resultado(s)
+            </p>
+            <div class="page-size">
+              <span>Registros por página</span>
+              <select class="form-select w-auto" x-model.number="medPageSize" @change="medPage = 1">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel panel--flush">
+          <div class="table-responsive" x-show="medFiltered.length > 0">
+            <table class="table-modern">
+              <thead>
+                <tr>
+                  <th>Droga</th>
+                  <th>Marca</th>
+                  <th class="d-none d-md-table-cell">Presentación</th>
+                  <th class="d-none d-lg-table-cell">Laboratorio</th>
+                  <th class="text-center">Cobertura</th>
+                  <th class="text-end">Copago</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="(m, idx) in medPaged" :key="m.droga + '|' + m.marca + '|' + m.presentacion + '|' + idx">
+                  <tr>
+                    <td data-label="Droga"><span class="fw-bold" x-text="m.droga"></span></td>
+                    <td data-label="Marca" x-text="m.marca"></td>
+                    <td class="d-none d-md-table-cell" data-label="Presentación" x-text="m.presentacion"></td>
+                    <td class="d-none d-lg-table-cell" data-label="Laboratorio" x-text="m.laboratorio"></td>
+                    <td class="text-center" data-label="Cobertura">
+                      <span class="badge-cob">
+                        <i class="bi bi-shield-check"></i>
+                        <span x-text="m.cobertura"></span>
+                      </span>
+                    </td>
+                    <td class="text-end" data-label="Copago"><span class="copago" x-text="m.copago"></span></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" x-show="medFiltered.length === 0">
+            <i class="bi bi-search fs-2"></i>
+            <h2>Sin resultados</h2>
+            <p>Probá con otro principio activo, marca o limpiá los filtros.</p>
+          </div>
+
+          <div class="table-foot" x-show="medFiltered.length > 0">
+            <div class="page-info">
+              Página <strong x-text="medPage"></strong> de <strong x-text="medTotalPages"></strong>
+            </div>
+            <div class="pager">
+              <button class="btn btn-ghost btn-sm" type="button" @click="medPage = Math.max(1, medPage - 1)"
+                :disabled="medPage === 1">
+                <i class="bi bi-chevron-left me-1"></i>
+                Anterior
+              </button>
+              <button class="btn btn-ghost btn-sm" type="button"
+                @click="medPage = Math.min(medTotalPages, medPage + 1)" :disabled="medPage === medTotalPages">
+                Siguiente
+                <i class="bi bi-chevron-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===================== FARMACIAS ===================== -->
+      <div class="tab-pane fade" id="farmacias" role="tabpanel">
+        <section class="panel">
+          <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label" for="farmProv">Provincia</label>
+              <select class="form-select" id="farmProv" x-model="farmProvincia" @change="onFarmProvinciaChange()">
+                <option value="">Todas las provincias</option>
+                <template x-for="p in farmProvincias" :key="p">
+                  <option :value="p" x-text="p"></option>
+                </template>
+              </select>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label" for="farmCity">Ciudad / Localidad</label>
+              <select class="form-select" id="farmCity" x-model="farmCiudad" @change="filterFarm()">
+                <option value="">Todas las localidades</option>
+                <template x-for="c in farmCiudades" :key="c">
+                  <option :value="c" x-text="c"></option>
+                </template>
+              </select>
+            </div>
+            <div class="col-12 col-md-8 col-lg-4">
+              <label class="form-label" for="farmQuery">Farmacia o dirección</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input class="form-control" id="farmQuery" type="search" placeholder="Ej.: DEL PILAR, RIOJA…"
+                  x-model="farmQuery" @input="filterFarm()">
+              </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 d-grid">
+              <button class="btn btn-ghost" type="button" @click="clearFarm()">
+                <i class="bi bi-arrow-clockwise me-1"></i>
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-meta">
+            <p>
+              Mostrando <span class="count" x-text="farmPaged.length"></span>
+              de <span class="count" x-text="farmFiltered.length"></span> resultado(s)
+            </p>
+            <div class="page-size">
+              <span>Registros por página</span>
+              <select class="form-select w-auto" x-model.number="farmPageSize" @change="farmPage = 1">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel panel--flush">
+          <div class="table-responsive" x-show="farmFiltered.length > 0">
+            <table class="table-modern">
+              <thead>
+                <tr>
+                  <th>Farmacia</th>
+                  <th class="d-none d-sm-table-cell">Dirección</th>
+                  <th>Localidad</th>
+                  <th class="d-none d-lg-table-cell">UGL</th>
+                  <th class="d-none d-md-table-cell">Provincia</th>
+                  <th class="d-none d-lg-table-cell">CP</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template
+                  x-for="(f, idx) in farmPaged"
+                  :key="f.farmacia_desc + '|' + f.farmacia_direcc + '|' + f.farmacia_localid + '|' + idx">
+                  <tr>
+                    <td data-label="Farmacia"><span class="fw-bold" x-text="f.farmacia_desc"></span></td>
+                    <td class="d-none d-sm-table-cell" data-label="Dirección" x-text="f.farmacia_direcc"></td>
+                    <td data-label="Localidad" x-text="f.farmacia_localid"></td>
+                    <td class="d-none d-lg-table-cell" data-label="UGL">
+                      <span class="id-chip" x-text="f.ugl_desc || f.ugl_id"></span>
+                    </td>
+                    <td class="d-none d-md-table-cell" data-label="Provincia" x-text="f.provincia_id"></td>
+                    <td class="d-none d-lg-table-cell" data-label="CP" x-text="f.farmacia_cp"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" x-show="farmFiltered.length === 0">
+            <i class="bi bi-search fs-2"></i>
+            <h2>Sin resultados</h2>
+            <p>Probá con otra provincia, localidad o filtro.</p>
+          </div>
+
+          <div class="table-foot" x-show="farmFiltered.length > 0">
+            <div class="page-info">
+              Página <strong x-text="farmPage"></strong> de <strong x-text="farmTotalPages"></strong>
+            </div>
+            <div class="pager">
+              <button class="btn btn-ghost btn-sm" type="button" @click="farmPage = Math.max(1, farmPage - 1)"
+                :disabled="farmPage === 1">
+                <i class="bi bi-chevron-left me-1"></i>
+                Anterior
+              </button>
+              <button class="btn btn-ghost btn-sm" type="button"
+                @click="farmPage = Math.min(farmTotalPages, farmPage + 1)" :disabled="farmPage === farmTotalPages">
+                Siguiente
+                <i class="bi bi-chevron-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===================== PRESTADORES ===================== -->
+      <div class="tab-pane fade" id="prestadores" role="tabpanel">
+        <section class="panel">
+          <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-7 col-lg-6">
+              <label class="form-label" for="prestQuery">UGL o descripción</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                <input class="form-control" id="prestQuery" type="search" placeholder="Ej.: NIVEL CENTRAL, CABA…"
+                  x-model="prestQuery" @input="filterPrest()">
+              </div>
+            </div>
+            <div class="col-12 col-md-5 col-lg-4">
+              <label class="form-label" for="prestModulo">Módulo</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-diagram-3"></i></span>
+                <input class="form-control" id="prestModulo" type="search" placeholder="Ej.: LABORATORIO, IMAGEN…"
+                  x-model="prestModulo" @input="filterPrest()">
+              </div>
+            </div>
+            <div class="col-12 col-lg-2 d-grid">
+              <button class="btn btn-ghost" type="button" @click="clearPrest()">
+                <i class="bi bi-arrow-clockwise me-1"></i>
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-meta">
+            <p>
+              Mostrando <span class="count" x-text="prestPaged.length"></span>
+              de <span class="count" x-text="prestFiltered.length"></span> resultado(s)
+            </p>
+            <div class="page-size">
+              <span>Registros por página</span>
+              <select class="form-select w-auto" x-model.number="prestPageSize" @change="prestPage = 1">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel panel--flush">
+          <div class="table-responsive" x-show="prestFiltered.length > 0">
+            <table class="table-modern">
+              <thead>
+                <tr>
+                  <th>UGL</th>
+                  <th>Descripción</th>
+                  <th class="d-none d-sm-table-cell">Módulo</th>
+                  <th class="text-end">Prestadores</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="(p, idx) in prestPaged" :key="p.ugl_id + '|' + p.modulo_pami_id + '|' + idx">
+                  <tr>
+                    <td data-label="UGL"><span class="id-chip" x-text="p.ugl_id"></span></td>
+                    <td data-label="Descripción"><span class="fw-bold" x-text="p.ugl_desc"></span></td>
+                    <td class="d-none d-sm-table-cell" data-label="Módulo" x-text="p.modulo_pami_desc"></td>
+                    <td class="text-end" data-label="Prestadores"><span class="copago"
+                        x-text="Number(p.q_prestadores||0).toLocaleString('es-AR')"></span></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" x-show="prestFiltered.length === 0">
+            <i class="bi bi-search fs-2"></i>
+            <h2>Sin resultados</h2>
+            <p>Probá ajustando los filtros de búsqueda.</p>
+          </div>
+
+          <div class="table-foot" x-show="prestFiltered.length > 0">
+            <div class="page-info">
+              Página <strong x-text="prestPage"></strong> de <strong x-text="prestTotalPages"></strong>
+            </div>
+            <div class="pager">
+              <button class="btn btn-ghost btn-sm" type="button" @click="prestPage = Math.max(1, prestPage - 1)"
+                :disabled="prestPage === 1">
+                <i class="bi bi-chevron-left me-1"></i>
+                Anterior
+              </button>
+              <button class="btn btn-ghost btn-sm" type="button"
+                @click="prestPage = Math.min(prestTotalPages, prestPage + 1)" :disabled="prestPage === prestTotalPages">
+                Siguiente
+                <i class="bi bi-chevron-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+
+          <p class="hint">
+            <i class="bi bi-info-circle"></i>
+            <span>Para buscar médicos, sanatorios o laboratorios habilitados hoy, usá la cartilla oficial.</span>
+          </p>
+        </section>
+      </div>
+
+      <!-- ===================== CARTILLA ===================== -->
+      <div class="tab-pane fade" id="cartilla" role="tabpanel">
+        <section class="panel panel--tint">
+          <div class="row g-4 align-items-center">
+            <div class="col-12 col-lg-8">
+              <div class="d-flex align-items-start gap-3">
+                <span class="cartilla-icon"><i class="bi bi-journal-medical"></i></span>
+                <div>
+                  <h2 class="cartilla-title">Cartilla de prestadores PAMI</h2>
+                  <p class="cartilla-text">
+                    Buscá en tiempo real por especialidad, localidad, sanatorio, laboratorio o médico habilitado.
+                    Es la referencia que toman las farmacias al momento de autorizar.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-4 text-lg-end">
+              <a class="btn btn-accent d-inline-flex align-items-center gap-2" href="https://prestadores.pami.org.ar/"
+                target="_blank" rel="noopener">
+                Abrir cartilla oficial
+                <i class="bi bi-box-arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <svg class="footer-mark" viewBox="0 0 48 48" role="img" aria-label="PamiGo">
+            <defs>
+              <linearGradient id="pgFoot" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#916EAF" />
+                <stop offset="1" stop-color="#45658D" />
+              </linearGradient>
+              <clipPath id="pgFootPill">
+                <rect x="10" y="17" width="28" height="14" rx="7" />
+              </clipPath>
+            </defs>
+            <rect width="48" height="48" rx="10" fill="url(#pgFoot)" />
+            <g transform="rotate(-45 24 24)">
+              <rect x="10" y="17" width="28" height="14" rx="7" fill="#FFFFFF" />
+              <rect x="10" y="17" width="14" height="14" fill="#F8951D" clip-path="url(#pgFootPill)" />
+            </g>
+          </svg>
+          <div>
+            <p class="footer-name">PamiGo <span class="footer-version">v1.0.0</span></p>
+            <p class="footer-credit">
+              Desarrollado por <strong>Jorge Ariel Pardo</strong>
+            </p>
+            <p class="footer-credit">
+              <span class="accent">Desarrollador web</span> · En colaboración con <strong>Glyph-cluster</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-note">
+          <p>Información referencial. La cobertura final la confirma la farmacia al momento de dispensar.</p>
+          <p>Datos obtenidos desde <a href="https://datos.gob.ar/" target="_blank" rel="noopener">datos.gob.ar</a> ·
+            Organización PAMI (CKAN).</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./pami.js?v=1.0.0"></script>
+  <script src="./router.js?v=1.0.0"></script>
+</body>
+
+</html>

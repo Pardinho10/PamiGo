@@ -1,0 +1,98 @@
+# ==========================================================================
+# PamiGo — configuración Apache / cPanel
+# URLs amigables sin .html · HTTPS · compresión · caché · 404 propio
+# ==========================================================================
+
+Options -MultiViews
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # 1) Forzar HTTPS (comentar si el hosting ya lo resuelve por proxy/CDN)
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  # 2) Compatibilidad: la antigua portada pami.html ahora es /
+  RewriteRule ^pami\.html$ / [R=301,L]
+
+  # 3) Redirigir externamente /archivo.html -> /archivo (solo si existe)
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteCond %{REQUEST_URI} !/index\.html$ [NC]
+  RewriteCond %{REQUEST_URI} !/404\.html$ [NC]
+  RewriteCond %{THE_REQUEST} \s/+([^?\s]+?)\.html[\s?] [NC]
+  RewriteRule ^ /%1 [R=301,L]
+
+  # 4) Resolver internamente /archivo -> archivo.html
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !\.[a-zA-Z0-9]{2,5}$
+  RewriteRule ^(.+?)/?$ $1.html [L]
+
+  # 5) Rutas de la SPA (tabs) -> index.html
+  #    Solo estas rutas; el resto cae en la 404 personalizada.
+  RewriteRule ^(medicamentos|farmacias|prestadores|cartilla)/?$ /index.html [L]
+</IfModule>
+
+# --------------------------------------------------------------------------
+# Compresión
+# --------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml image/svg+xml
+</IfModule>
+
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# --------------------------------------------------------------------------
+# Caché
+# --------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 2 hours"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType application/json "access plus 1 day"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+  # El HTML nunca se cachea: garantiza ver el ?v= nuevo de los assets
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# --------------------------------------------------------------------------
+# Tipos MIME
+# --------------------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType image/svg+xml .svg
+  AddType application/manifest+json .webmanifest
+  AddType application/json .json
+</IfModule>
+
+# --------------------------------------------------------------------------
+# Seguridad básica
+# --------------------------------------------------------------------------
+<FilesMatch "^\.(htaccess|htpasswd|git|env)">
+  Require all denied
+</FilesMatch>
+
+<FilesMatch "(^README|^CHANGELOG|^DEPLOY|\.md$)">
+  Require all denied
+</FilesMatch>

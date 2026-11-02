@@ -1,0 +1,26 @@
+{
+  "name": "PamiGo",
+  "short_name": "PamiGo",
+  "description": "Buscador de medicamentos, prestadores y farmacias de PAMI con datos oficiales.",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F3F5F9",
+  "theme_color": "#0B2344",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

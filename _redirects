@@ -1,0 +1,14 @@
+# PamiGo — Netlify / Cloudflare Pages
+# URLs amigables sin .html
+
+/                /index.html        200
+/medicamentos    /index.html        200
+/farmacias       /index.html        200
+/prestadores     /index.html        200
+/cartilla        /index.html        200
+
+# /pagina.html -> /pagina (301)
+/:page.html      /:page             301
+
+# 404 propio
+/*               /404.html          404

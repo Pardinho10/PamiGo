@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+package-lock.json
+
+# Archivos fuente de datos sin procesar (los JSON generados sí se versionan)
+data/*.xlsx
+data/*.csv
+data/*.xls
+
+# Archivos con datos personales (nunca publicar)
+data/afiliados*
+
+# Sistema operativo / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Local
+.env
+.env.*
+*.log
