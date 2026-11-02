@@ -1,3 +1,12 @@
+/** Normaliza texto para búsquedas: sin tildes, minúsculas y sin espacios extremos. */
+function norm(value) {
+  return (value || '').toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
 function pamiApp() {
   return {
     meds: [],
@@ -5,7 +14,10 @@ function pamiApp() {
     medPaged: [],
     medQueryDroga: '',
     medQueryMarca: '',
-    medQueryTipo: '',
+    medLab: '',
+    medCob: '',
+    medLaboratorios: [],
+    medCoberturas: [],
     medCount: 0,
     medPage: 1,
     medPageSize: 20,
@@ -46,13 +58,26 @@ function pamiApp() {
           fetch('./data/prestadores.json', { cache: 'no-store' }),
           fetch('./data/farmacias.json', { cache: 'no-store' })
         ]);
-        this.meds = await mRes.json();
-        this.prests = await pRes.json();
-        this.farms = await fRes.json();
+        const medicamentos = await mRes.json();
+        const prestadores = await pRes.json();
+        const farmacias = await fRes.json();
+
+        // Índices de búsqueda normalizados (se calculan una sola vez)
+        this.meds = medicamentos.map(m => Object.assign(m, {
+          _droga: norm(m.droga),
+          _marca: norm(m.marca)
+        }));
+        this.prests = prestadores.map(p => Object.assign(p, {
+          _busqueda: norm([p.ugl_desc, p.ugl_id, p.modulo_pami_desc].join(' '))
+        }));
+        this.farms = farmacias.map(f => Object.assign(f, {
+          _busqueda: norm([f.farmacia_desc, f.farmacia_direcc, f.farmacia_localid].join(' '))
+        }));
         this.medCount = this.meds.length;
         this.prestCount = this.prests.length;
         this.farmCount = this.farms.length;
         this.buildFarmFilters();
+        this.buildMedFilters();
         this.filterMeds();
         this.filterPrest();
         this.filterFarm();
@@ -101,20 +126,58 @@ function pamiApp() {
       this.filterFarm();
     },
 
+    buildMedFilters() {
+      const coberturas = new Map();
+      for (const m of this.meds) {
+        const cob = (m.cobertura || '').toString().trim();
+        if (cob) coberturas.set(cob, (coberturas.get(cob) || 0) + 1);
+      }
+      this.medCoberturas = Array.from(coberturas, ([valor, cantidad]) => ({ valor, cantidad }))
+        .sort((a, b) => parseFloat(a.valor) - parseFloat(b.valor));
+      this.updateMedLaboratorios(this.meds);
+    },
+
+    /** Recalcula los laboratorios disponibles según los filtros de droga y marca. */
+    updateMedLaboratorios(rows) {
+      const conteo = new Map();
+      for (const m of (rows || this.meds)) {
+        const lab = (m.laboratorio || '').toString().trim();
+        if (!lab) continue;
+        conteo.set(lab, (conteo.get(lab) || 0) + 1);
+      }
+
+      const lista = Array.from(conteo, ([nombre, cantidad]) => ({ nombre, cantidad }));
+
+      // Si el laboratorio elegido no aparece en el resultado, se conserva con 0
+      // para que el usuario entienda por qué no hay coincidencias.
+      if (this.medLab && !conteo.has(this.medLab)) {
+        lista.push({ nombre: this.medLab, cantidad: 0 });
+      }
+
+      lista.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+      this.medLaboratorios = lista;
+    },
+
     filterMeds() {
-      const qd = (this.medQueryDroga || '').toString().trim().toLowerCase();
-      const qm = (this.medQueryMarca || '').toString().trim().toLowerCase();
-      const qt = (this.medQueryTipo || '').toString().trim().toLowerCase();
+      const qd = norm(this.medQueryDroga);
+      const qm = norm(this.medQueryMarca);
       let res = this.meds;
       if (qd) {
-        res = res.filter(m => (m.droga || '').toString().toLowerCase().includes(qd));
+        res = res.filter(m => m._droga.includes(qd));
       }
       if (qm) {
-        res = res.filter(m => (m.marca || '').toString().toLowerCase().includes(qm));
+        res = res.filter(m => m._marca.includes(qm));
       }
-      if (qt) {
-        res = res.filter(m => ((m.cobertura || '') + ' ' + (m.presentacion || '')).toString().toLowerCase().includes(qt));
+
+      this.updateMedLaboratorios(res);
+
+      if (this.medLab) {
+        res = res.filter(m => (m.laboratorio || '').toString().trim() === this.medLab);
       }
+      if (this.medCob) {
+        res = res.filter(m => (m.cobertura || '').toString().trim() === this.medCob);
+      }
+
       this.medFiltered = res;
       this.medPage = 1;
       this.paginateMeds();
@@ -123,7 +186,8 @@ function pamiApp() {
     clearMeds() {
       this.medQueryDroga = '';
       this.medQueryMarca = '';
-      this.medQueryTipo = '';
+      this.medLab = '';
+      this.medCob = '';
       this.filterMeds();
     },
 
@@ -136,11 +200,11 @@ function pamiApp() {
     },
 
     filterPrest() {
-      const q = (this.prestQuery || '').toString().trim().toLowerCase();
-      const qm = (this.prestModulo || '').toString().trim().toLowerCase();
+      const q = norm(this.prestQuery);
+      const qm = norm(this.prestModulo);
       let res = this.prests;
       if (q) {
-        res = res.filter(p => ((p.ugl_desc || '') + ' ' + (p.ugl_id || '')).toString().toLowerCase().includes(q));
+        res = res.filter(p => p._busqueda.includes(q));
       }
       if (qm) {
         res = res.filter(p => (p.modulo_pami_desc || '').toString().toLowerCase().includes(qm));
@@ -165,7 +229,7 @@ function pamiApp() {
     },
 
     filterFarm() {
-      const q = (this.farmQuery || '').toString().trim().toLowerCase();
+      const q = norm(this.farmQuery);
       const prov = (this.farmProvincia || '').toString().trim().toLowerCase();
       const city = (this.farmCiudad || '').toString().trim().toLowerCase();
       let res = this.farms;
@@ -176,7 +240,7 @@ function pamiApp() {
         res = res.filter(f => (f.farmacia_localid || '').toString().toLowerCase() === city);
       }
       if (q) {
-        res = res.filter(f => ((f.farmacia_desc || '') + ' ' + (f.farmacia_direcc || '') + ' ' + (f.farmacia_localid || '')).toString().toLowerCase().includes(q));
+        res = res.filter(f => f._busqueda.includes(q));
       }
       this.farmFiltered = res;
       this.farmPage = 1;

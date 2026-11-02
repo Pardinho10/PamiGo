@@ -4,6 +4,25 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.1.0] — 2025-11-01
+
+### Añadido
+- Filtro por laboratorio en el buscador de medicamentos. El selector muestra el conteo de productos por
+  laboratorio y sus opciones se recalculan según el principio activo y la marca ingresados; si el
+  laboratorio elegido queda sin coincidencias se conserva marcado con `(0)` para explicar el resultado vacío.
+- Selector de cobertura con los cinco valores del conjunto de datos (40 %, 50 %, 60 %, 80 %, 100 %) y la
+  cantidad de registros de cada uno, en reemplazo del campo de texto libre.
+- Los cuatro filtros de medicamentos quedan en una única línea en pantallas de escritorio.
+
+### Corregido
+- Búsqueda insensible a mayúsculas y tildes en los tres buscadores: "losartan" ahora encuentra
+  "losartán" y "acido acetilsalicilico" coincide con los registros que contienen la cadena equivalente.
+  Los índices de búsqueda se normalizan una sola vez al cargar los datos.
+
+### Cambiado
+- La acción "Limpiar" se traslada a la barra de resultados, junto al selector de registros por página, en
+  las tres vistas, para liberar espacio en la fila de filtros.
+
 ## [1.0.0] — 2025-11-01
 
 Primera versión lista para producción.

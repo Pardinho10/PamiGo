@@ -426,6 +426,13 @@ body::before {
   color: var(--navy);
 }
 
+.meta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
 .panel-meta .page-size {
   display: flex;
   align-items: center;
@@ -840,6 +847,10 @@ body::before {
   .panel-meta {
     justify-content: center;
     text-align: center;
+  }
+
+  .meta-actions {
+    justify-content: center;
   }
 }
 

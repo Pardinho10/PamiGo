@@ -7,7 +7,7 @@ sobre los conjuntos de datos abiertos publicados por el organismo.
 Es un sitio estático: no requiere backend, servidor de aplicaciones ni base de datos. La búsqueda, el
 filtrado y la paginación se resuelven íntegramente en el navegador.
 
-Versión actual: **1.0.0**
+Versión actual: **1.1.0**
 
 ![Vista de escritorio de PamiGo](docs/preview.png)
 
@@ -19,10 +19,14 @@ Versión actual: **1.0.0**
 ## Funcionalidades
 
 ### Medicamentos
-- Búsqueda por principio activo (droga) y por marca, con filtros combinables.
-- Filtro por tipo de cobertura o presentación.
+- Búsqueda por principio activo (droga) y por marca, con filtros combinables e insensible a mayúsculas
+  y tildes (escribir "losartan" encuentra "losartán").
+- Filtro por laboratorio: el selector muestra el conteo de productos y sus opciones se recalculan según la
+  droga y la marca ingresadas, de modo que solo aparecen los laboratorios que fabrican ese medicamento.
+- Filtro por cobertura mediante selector, con los cinco valores del conjunto y su cantidad de registros.
 - Resultados paginados con selector de tamaño de página (10, 20, 50 o 100 registros).
 - Visualización de cobertura como indicador y del copago en pesos.
+- Acción "Limpiar" en la barra de resultados, junto al selector de registros por página.
 
 ### Farmacias
 - Filtro en cascada por provincia y localidad: al elegir una provincia, el selector de localidades se
@@ -202,7 +206,12 @@ los JSON permite reproducir cualquier estado del sitio y auditar cambios mediant
 
 - La primera carga descarga los tres conjuntos de datos en paralelo (5,2 MB sin comprimir, 537 KB con
   gzip). En conexiones móviles lentas la tabla puede tardar unos segundos en poblarse.
-- La búsqueda es por coincidencia de subcadena, sin tolerancia a errores de tipeo ni acentos.
+- La búsqueda es por coincidencia de subcadena: insensible a mayúsculas y tildes, pero sin tolerancia a
+  errores de tipeo ni a sinónimos del principio activo (el conjunto original usa formas como
+  "acetilsalicílico,ác." en lugar de "ácido acetilsalicílico").
+- El conjunto de datos original trae nombres de laboratorio con caracteres corruptos ("Bag¿" en lugar de
+  "Bagó") y truncados a 15 caracteres ("Laboratorios Be"). Se muestran tal como llegan; la corrección
+  corresponde a la etapa de preparación de datos.
 - No hay actualización automática de datos: cada nueva publicación del organismo requiere regenerar los JSON.
 - El archivo de afiliados del organismo contiene datos personales y no forma parte de este proyecto.
 
@@ -211,7 +220,7 @@ los JSON permite reproducir cualquier estado del sitio y auditar cambios mediant
 - Carga diferida por pestaña: descargar cada conjunto solo cuando se abre su vista.
 - Persistencia de filtros en la URL para compartir búsquedas.
 - Exportación de resultados a CSV.
-- Normalización de drogas con sinónimos y búsqueda insensible a acentos.
+- Normalización de drogas con sinónimos y tolerancia a errores de tipeo.
 - Evaluación de una capa de consulta del lado del servidor si el volumen de datos o los requisitos de
   búsqueda superan lo que conviene resolver en el cliente.
 
