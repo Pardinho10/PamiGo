@@ -2,11 +2,16 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/pami", "destination": "/", "permanent": true },
+    { "source": "/pami.html", "destination": "/", "permanent": true },
+    { "source": "/index", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
-    { "source": "/medicamentos", "destination": "/index.html" },
-    { "source": "/farmacias", "destination": "/index.html" },
-    { "source": "/prestadores", "destination": "/index.html" },
-    { "source": "/cartilla", "destination": "/index.html" }
+    { "source": "/medicamentos", "destination": "/" },
+    { "source": "/farmacias", "destination": "/" },
+    { "source": "/prestadores", "destination": "/" },
+    { "source": "/cartilla", "destination": "/" }
   ],
   "headers": [
     {
