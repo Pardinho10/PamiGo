@@ -11,6 +11,10 @@ data/*.xls
 # Archivos con datos personales (nunca publicar)
 data/afiliados*
 
+# Python (scripts de datos)
+__pycache__/
+*.pyc
+
 # Sistema operativo / editor
 .DS_Store
 Thumbs.db
