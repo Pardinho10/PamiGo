@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./pami.css?v=1.2.0">
+  <link rel="stylesheet" href="./pami.css?v=1.3.0">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
@@ -178,7 +178,7 @@
               </button>
               <div class="page-size">
                 <span>Registros por página</span>
-                <select class="form-select w-auto" x-model.number="medPageSize" @change="medPage = 1">
+                <select class="form-select w-auto" x-model.number="medPageSize" @change="setMedPageSize()">
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="50">50</option>
@@ -292,7 +292,7 @@
               </button>
               <div class="page-size">
                 <span>Registros por página</span>
-                <select class="form-select w-auto" x-model.number="farmPageSize" @change="farmPage = 1">
+                <select class="form-select w-auto" x-model.number="farmPageSize" @change="setFarmPageSize()">
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="50">50</option>
@@ -313,7 +313,7 @@
                   <th>Localidad</th>
                   <th class="d-none d-lg-table-cell">UGL</th>
                   <th class="d-none d-md-table-cell">Provincia</th>
-                  <th class="d-none d-lg-table-cell">CP</th>
+                  <th class="d-none d-md-table-cell">Departamento</th>
                 </tr>
               </thead>
               <tbody>
@@ -325,10 +325,11 @@
                     <td class="d-none d-sm-table-cell" data-label="Dirección" x-text="f.farmacia_direcc"></td>
                     <td data-label="Localidad" x-text="f.farmacia_localid"></td>
                     <td class="d-none d-lg-table-cell" data-label="UGL">
-                      <span class="id-chip" x-text="f.ugl_desc || f.ugl_id"></span>
+                      <span class="id-chip" :class="{ 'is-empty': !f.ugl_desc }"
+                        x-text="f.ugl_desc || '—'"></span>
                     </td>
                     <td class="d-none d-md-table-cell" data-label="Provincia" x-text="f.provincia_id"></td>
-                    <td class="d-none d-lg-table-cell" data-label="CP" x-text="f.farmacia_cp"></td>
+                    <td class="d-none d-md-table-cell" data-label="Departamento" x-text="f.departamento"></td>
                   </tr>
                 </template>
               </tbody>
@@ -358,6 +359,12 @@
               </button>
             </div>
           </div>
+
+          <p class="hint">
+            <i class="bi bi-info-circle"></i>
+            <span>El padrón de farmacias no informa la UGL de cada boca de atención. Se deduce del listado de
+              agencias y sólo se muestra cuando la provincia tiene una única UGL.</span>
+          </p>
         </section>
       </div>
 
@@ -369,15 +376,15 @@
               <label class="form-label" for="prestQuery">UGL o descripción</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                <input class="form-control" id="prestQuery" type="search" placeholder="Ej.: NIVEL CENTRAL, CABA…"
+                <input class="form-control" id="prestQuery" type="search" placeholder="Ej.: ROSARIO, TUCUMAN…"
                   x-model="prestQuery" @input="filterPrest()">
               </div>
             </div>
             <div class="col-12 col-md-5 col-lg-6">
-              <label class="form-label" for="prestModulo">Módulo</label>
+              <label class="form-label" for="prestModulo">Especialidad</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-diagram-3"></i></span>
-                <input class="form-control" id="prestModulo" type="search" placeholder="Ej.: LABORATORIO, IMAGEN…"
+                <input class="form-control" id="prestModulo" type="search" placeholder="Ej.: CARDIOLOGIA, KINESIOLOGIA…"
                   x-model="prestModulo" @input="filterPrest()">
               </div>
             </div>
@@ -395,7 +402,7 @@
               </button>
               <div class="page-size">
                 <span>Registros por página</span>
-                <select class="form-select w-auto" x-model.number="prestPageSize" @change="prestPage = 1">
+                <select class="form-select w-auto" x-model.number="prestPageSize" @change="setPrestPageSize()">
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="50">50</option>
@@ -413,7 +420,7 @@
                 <tr>
                   <th>UGL</th>
                   <th>Descripción</th>
-                  <th class="d-none d-sm-table-cell">Módulo</th>
+                  <th class="d-none d-sm-table-cell">Especialidad</th>
                   <th class="text-end">Prestadores</th>
                 </tr>
               </thead>
@@ -422,7 +429,7 @@
                   <tr>
                     <td data-label="UGL"><span class="id-chip" x-text="p.ugl_id"></span></td>
                     <td data-label="Descripción"><span class="fw-bold" x-text="p.ugl_desc"></span></td>
-                    <td class="d-none d-sm-table-cell" data-label="Módulo" x-text="p.modulo_pami_desc"></td>
+                    <td class="d-none d-sm-table-cell" data-label="Especialidad" x-text="p.modulo_pami_desc"></td>
                     <td class="text-end" data-label="Prestadores"><span class="copago"
                         x-text="Number(p.q_prestadores||0).toLocaleString('es-AR')"></span></td>
                   </tr>
@@ -512,7 +519,7 @@
             </g>
           </svg>
           <div>
-            <p class="footer-name">PamiGo <span class="footer-version">v1.2.0</span></p>
+            <p class="footer-name">PamiGo <span class="footer-version">v1.3.0</span></p>
             <p class="footer-credit">
               Desarrollado por <strong>Jorge Ariel Pardo</strong>
             </p>
@@ -535,8 +542,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./pami.js?v=1.2.0"></script>
-  <script src="./router.js?v=1.2.0"></script>
+  <script src="./pami.js?v=1.3.0"></script>
+  <script src="./router.js?v=1.3.0"></script>
 </body>
 
 </html>

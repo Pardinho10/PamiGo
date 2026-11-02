@@ -214,6 +214,11 @@ function pamiApp() {
       this.filterMeds();
     },
 
+    setMedPageSize() {
+      this.medPage = 1;
+      this.paginateMeds();
+    },
+
     paginateMeds() {
       const size = Number(this.medPageSize) || 20;
       this.medTotalPages = Math.max(1, Math.ceil(this.medFiltered.length / size));
@@ -241,6 +246,11 @@ function pamiApp() {
       this.prestQuery = '';
       this.prestModulo = '';
       this.filterPrest();
+    },
+
+    setPrestPageSize() {
+      this.prestPage = 1;
+      this.paginatePrest();
     },
 
     paginatePrest() {
@@ -276,6 +286,11 @@ function pamiApp() {
       this.farmCiudad = '';
       this.updateFarmCiudades();
       this.filterFarm();
+    },
+
+    setFarmPageSize() {
+      this.farmPage = 1;
+      this.paginateFarm();
     },
 
     paginateFarm() {

@@ -517,6 +517,12 @@ body::before {
   color: var(--purple);
 }
 
+.id-chip.is-empty {
+  background: transparent;
+  color: var(--muted);
+  font-weight: 400;
+}
+
 .copago {
   font-weight: 900;
   color: var(--navy);

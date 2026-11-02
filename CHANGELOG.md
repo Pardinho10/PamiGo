@@ -4,6 +4,27 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.3.0] — 2026-11-02
+
+### Añadido
+- Farmacias y prestadores actualizados a los archivos del 06/08/2026: 15.241 farmacias (antes 13.689) y
+  4.388 combinaciones de UGL y especialidad (antes 2.520 filas).
+- Constructor para el padrón de farmacias vigente, con remapeo de columnas y nueva columna Departamento.
+- Constructor para el archivo de prestadores, que interpreta los bloques de UGL con especialidades y
+  valida que la suma por UGL coincida con el total informado y con el total general (42.675).
+- UGL derivada por provincia desde el catálogo de agencias de PAMI, con aviso en la interfaz.
+- Reparación genérica de texto UTF-8 leído como latin-1/cp1252 en los archivos de origen
+  ("AGÃœERO" → "AGÜERO", "1Â° DE MAYO" → "1° DE MAYO").
+
+### Cambiado
+- La tabla de farmacias reemplaza la columna Código Postal por Departamento.
+- La tabla de prestadores reemplaza "Módulo" por "Especialidad", acorde al archivo vigente.
+- El catálogo de UGL y agencias se descarga como insumo del ETL y no se publica.
+
+### Corregido
+- El selector de registros por página no volvía a paginar la tabla: cambiar de 20 a 100 no alteraba las
+  filas visibles hasta forzar otro filtro.
+
 ## [1.2.0] — 2026-11-02
 
 ### Añadido

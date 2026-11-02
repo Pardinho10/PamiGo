@@ -7,20 +7,18 @@
     "archivo": "data/raw/medicamentos.xlsx"
   },
   "farmacias": {
-    "registros": 13689,
-    "actualizado": "2022-07-07",
-    "fuente": "http://datos.pami.org.ar/dataset/78ab3d28-083a-4664-8c34-7a22254f2123/resource/d5eda98b-71f5-4e31-9d4c-4dea51833b38/download/listado-de-farmacias-pami-1.csv",
+    "registros": 15241,
+    "actualizado": "2026-08-06",
+    "fuente": "http://datos.pami.org.ar/dataset/78ab3d28-083a-4664-8c34-7a22254f2123/resource/0f6285bf-0732-4397-9abf-000267019ef3/download/listado-de-farmacias.xlsx",
     "dataset": "farmacias",
-    "archivo": "data/farmacias.csv",
-    "nota": "Padrón de julio 2022. La versión vigente (agosto 2026) tiene otro esquema y requiere remapeo de columnas."
+    "archivo": "data/raw/farmacias.xlsx"
   },
   "prestadores": {
-    "registros": 2520,
-    "actualizado": "2022-08-03",
-    "fuente": "http://datos.pami.org.ar/dataset/62eb68ca-3451-453e-9bf0-2a8be84cbe7e/resource/126ce391-b23f-4cf8-9308-6fb0122e3cb4/download/cantidad-de-prestadores-por-ugl-y-modulo.xlsx",
+    "registros": 4388,
+    "actualizado": "2026-08-06",
+    "fuente": "http://datos.pami.org.ar/dataset/62eb68ca-3451-453e-9bf0-2a8be84cbe7e/resource/92670c52-f274-414c-bac6-4fc5f01d7ed1/download/cantidad-de-prestadores-por-ugl-y-por-tipo-de-prestacion.xlsx",
     "dataset": "listado-de-prestadores",
-    "archivo": "data/prestadores.xlsx",
-    "nota": "Resumen de agosto 2022. La versión vigente (agosto 2026) cambia la estructura a especialidades por UGL."
+    "archivo": "data/raw/prestadores.xlsx"
   },
   "generado": "2026-11-02"
 }

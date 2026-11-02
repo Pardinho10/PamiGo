@@ -7,7 +7,7 @@ sobre los conjuntos de datos abiertos publicados por el organismo.
 Es un sitio estático: no requiere backend, servidor de aplicaciones ni base de datos. La búsqueda, el
 filtrado y la paginación se resuelven íntegramente en el navegador.
 
-Versión actual: **1.2.0**
+Versión actual: **1.3.0**
 
 ![Vista de escritorio de PamiGo](docs/preview.png)
 
@@ -32,11 +32,15 @@ Versión actual: **1.2.0**
 - Filtro en cascada por provincia y localidad: al elegir una provincia, el selector de localidades se
   recalcula con las localidades disponibles en ese conjunto.
 - Búsqueda de texto libre sobre nombre, dirección y localidad.
+- Departamento como columna de referencia territorial (reemplaza al código postal, que el padrón vigente
+  ya no publica).
+- UGL derivada del listado de agencias cuando la provincia tiene una única unidad, con aviso explícito en
+  la interfaz.
 - Paginación con el mismo comportamiento que la tabla de medicamentos.
 
 ### Prestadores
-- Resumen de cantidad de prestadores por UGL (Unidad de Gestión Local) y módulo PAMI.
-- Búsqueda por UGL, descripción o módulo.
+- Cantidad de prestadores por UGL (Unidad de Gestión Local) y especialidad, sobre las 38 UGL del país.
+- Búsqueda por UGL o especialidad.
 - Enlace a la cartilla oficial para la búsqueda de médicos, sanatorios y laboratorios habilitados.
 
 ### Navegación y URLs
@@ -121,8 +125,8 @@ nacional y se transforman a JSON para su consumo desde el navegador.
 | Conjunto | Registros | Campos principales |
 |---|---|---|
 | Listado de precios de medicamentos para afiliados | 8.734 | droga, marca, presentación, laboratorio, cobertura, copago |
-| Farmacias habilitadas | 13.689 | provincia, UGL, farmacia, dirección, localidad, código postal |
-| Resumen de prestadores por UGL y módulo | 2.520 | UGL, descripción, módulo, cantidad de prestadores |
+| Farmacias habilitadas | 15.241 | provincia, departamento, farmacia, dirección, localidad, UGL derivada |
+| Prestadores por UGL y especialidad | 4.388 | UGL, especialidad, cantidad de prestadores |
 
 Fuentes:
 
@@ -148,11 +152,13 @@ cada conjunto y el pie de la aplicación la muestra.
 | Conjunto | Datos al | Registros |
 |---|---|---|
 | Medicamentos | 02/10/2026 | 8.734 |
-| Farmacias | 07/07/2022 | 13.689 |
-| Prestadores | 03/08/2022 | 2.520 |
+| Farmacias | 06/08/2026 | 15.241 |
+| Prestadores | 06/08/2026 | 4.388 |
 
-Los dos últimos están pendientes de actualización: los archivos vigentes cambiaron de esquema y requieren
-un remapeo de columnas (ver CHANGELOG).
+Dos conjuntos cambiaron de esquema y el constructor los adapta: el padrón de farmacias ya no publica UGL
+ni código postal, y el de prestadores pasó de un resumen por módulo a una apertura por UGL y especialidad.
+La UGL de cada farmacia se deduce del listado de agencias sólo cuando la provincia tiene una única unidad;
+Buenos Aires, Santa Fe, Córdoba y Entre Ríos tienen varias y el padrón no informa la asignación.
 
 ---
 
@@ -231,9 +237,10 @@ los JSON permite reproducir cualquier estado del sitio y auditar cambios mediant
 - La búsqueda es por coincidencia de subcadena: insensible a mayúsculas y tildes, pero sin tolerancia a
   errores de tipeo ni a sinónimos del principio activo (el conjunto original usa formas como
   "acetilsalicílico,ác." en lugar de "ácido acetilsalicílico").
-- El conjunto de datos original trae nombres de laboratorio con caracteres corruptos ("Bag¿" en lugar de
-  "Bagó") y truncados a 15 caracteres ("Laboratorios Be"). Se muestran tal como llegan; la corrección
-  corresponde a la etapa de preparación de datos.
+- Los nombres de laboratorio del origen están truncados a 15 caracteres ("Laboratorios Be"). Cuatro de ellos
+  conservan un carácter corrupto sin posibilidad de deducción ("Temis-Lostal¿", "G¿minis Farmac¿"),
+  junto con dos marcas ("DRUM ß", "LISALER ß"). El constructor los informa al generar los datos.
+- La UGL de las farmacias sólo se conoce en las provincias con una única unidad de gestión local.
 - No hay actualización automática de datos: cada nueva publicación del organismo requiere regenerar los JSON.
 - El archivo de afiliados del organismo contiene datos personales y no forma parte de este proyecto.
 
@@ -243,6 +250,7 @@ los JSON permite reproducir cualquier estado del sitio y auditar cambios mediant
 - Persistencia de filtros en la URL para compartir búsquedas.
 - Exportación de resultados a CSV.
 - Normalización de drogas con sinónimos y tolerancia a errores de tipeo.
+- Asignación de UGL por departamento para las provincias con más de una unidad.
 - Evaluación de una capa de consulta del lado del servidor si el volumen de datos o los requisitos de
   búsqueda superan lo que conviene resolver en el cliente.
 

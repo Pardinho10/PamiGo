@@ -25,6 +25,8 @@ DATASETS = {
     'medicamentos': 'medicamentos-para-afiliados',
     'farmacias': 'farmacias',
     'prestadores': 'listado-de-prestadores',
+    # Catálogo auxiliar: no se publica, se usa para derivar la UGL de cada farmacia
+    'ugls': 'agencias-ugls',
 }
 
 
