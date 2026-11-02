@@ -20,6 +20,8 @@ Primera versión lista para producción.
 - Configuración de despliegue: `.htaccess` (Apache/cPanel), `_redirects` (Netlify/Cloudflare) y `vercel.json`.
 - Servidor de desarrollo `serve.js` con el mismo comportamiento de reescritura que producción.
 - Cabeceras de seguridad, compresión y caché con cache-busting (`?v=1.0.0`).
+- Integración continua con GitHub Actions: verificación de estructura, datos, versión y
+  configuración, más prueba de humo de rutas amigables y 404 (`node scripts/check.js`).
 
 ### Cambiado
 - Tablas responsive: en pantallas menores a 576 px pasan a formato tarjeta con etiquetas, sin scroll horizontal.

@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contenido:
+    name: Verificación de contenido
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verificar estructura, datos, versiones y configuración
+        run: node scripts/check.js
+
+  rutas:
+    name: Rutas amigables y 404
+    runs-on: ubuntu-latest
+    needs: contenido
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Levantar servidor de desarrollo
+        run: |
+          node serve.js &
+          for intento in $(seq 1 20); do
+            if curl -sf http://127.0.0.1:5176/ > /dev/null; then
+              echo "Servidor disponible"
+              exit 0
+            fi
+            sleep 0.5
+          done
+          echo "El servidor no respondió"
+          exit 1
+
+      - name: Comprobar códigos de estado
+        run: |
+          set -e
+          verificar() {
+            ruta="$1"
+            esperado="$2"
+            obtenido=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:5176${ruta}")
+            printf "%-20s %s (esperado %s)\n" "$ruta" "$obtenido" "$esperado"
+            if [ "$obtenido" != "$esperado" ]; then
+              echo "Falló: ${ruta} devolvió ${obtenido}"
+              exit 1
+            fi
+          }
+
+          verificar / 200
+          verificar /medicamentos 200
+          verificar /farmacias 200
+          verificar /prestadores 200
+          verificar /cartilla 200
+          verificar /favicon.svg 200
+          verificar /data/medicamentos.json 200
+          verificar /no-existe 404
+
+      - name: Comprobar redirección de la URL anterior
+        run: |
+          codigo=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5176/pami.html)
+          destino=$(curl -s -o /dev/null -w "%{redirect_url}" http://127.0.0.1:5176/pami.html)
+          echo "/pami.html -> $codigo $destino"
+          test "$codigo" = "301"
+          test "$destino" = "http://127.0.0.1:5176/"
+
+      - name: Detener servidor
+        if: always()
+        run: pkill -f "serve[.]js" || true

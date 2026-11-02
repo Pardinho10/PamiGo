@@ -10,6 +10,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node serve.js",
-    "dev": "node serve.js"
+    "dev": "node serve.js",
+    "check": "node scripts/check.js",
+    "test": "node scripts/check.js"
   }
 }

@@ -160,6 +160,26 @@ Antes de publicar, reemplazar `TU-DOMINIO` en `sitemap.xml` y en la etiqueta `ca
 
 ---
 
+## Integración continua
+
+`.github/workflows/ci.yml` se ejecuta en cada push a `main` y en cada pull request, con dos etapas:
+
+1. **Verificación de contenido** (`node scripts/check.js`, sin dependencias): archivos obligatorios, JSON
+   válido, esquema y volumen de los tres conjuntos de datos, referencias locales de los documentos,
+   metadatos y accesibilidad básica, coincidencia de versión entre `package.json`, el HTML, el footer y
+   el `CHANGELOG`, presencia de las rutas amigables en cada configuración de despliegue, archivos crudos o
+   con datos personales fuera de control de versiones y presupuesto de peso de los datos con gzip.
+2. **Rutas y 404**: levanta `serve.js` y comprueba los códigos de estado de las cuatro vistas, los assets,
+   la página 404 y la redirección 301 de la URL anterior.
+
+Se puede ejecutar localmente:
+
+```bash
+node scripts/check.js   # o: npm test
+```
+
+---
+
 ## Decisiones técnicas
 
 **Sin backend.** El volumen de datos (25.000 registros, 5,2 MB en JSON) permite resolver todas las
