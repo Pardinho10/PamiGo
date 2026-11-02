@@ -19,6 +19,7 @@ function pamiApp() {
     medLaboratorios: [],
     medCoberturas: [],
     medCount: 0,
+    dataUpdated: '',
     medPage: 1,
     medPageSize: 20,
     medTotalPages: 1,
@@ -49,6 +50,28 @@ function pamiApp() {
 
     init() {
       this.loadData();
+      this.loadMeta();
+    },
+
+    /** Fecha de actualización de cada conjunto, para mostrarla en el pie. */
+    async loadMeta() {
+      try {
+        const res = await fetch('./data/meta.json', { cache: 'no-store' });
+        if (!res.ok) return;
+        const meta = await res.json();
+        const etiquetas = { medicamentos: 'medicamentos', farmacias: 'farmacias', prestadores: 'prestadores' };
+        const partes = [];
+        for (const clave of Object.keys(etiquetas)) {
+          const fecha = meta[clave] && meta[clave].actualizado;
+          if (!fecha) continue;
+          const [anio, mes, dia] = String(fecha).split('-');
+          if (!anio || !mes || !dia) continue;
+          partes.push(`${etiquetas[clave]} al ${dia}/${mes}/${anio}`);
+        }
+        this.dataUpdated = partes.join(' · ');
+      } catch (e) {
+        console.warn('No se pudieron leer los metadatos de datos', e);
+      }
     },
 
     async loadData() {

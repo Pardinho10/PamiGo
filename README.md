@@ -7,7 +7,7 @@ sobre los conjuntos de datos abiertos publicados por el organismo.
 Es un sitio estático: no requiere backend, servidor de aplicaciones ni base de datos. La búsqueda, el
 filtrado y la paginación se resuelven íntegramente en el navegador.
 
-Versión actual: **1.1.0**
+Versión actual: **1.2.0**
 
 ![Vista de escritorio de PamiGo](docs/preview.png)
 
@@ -97,6 +97,11 @@ entrega tal como se sirve.
 │   ├── medicamentos.json   8.734 registros
 │   ├── farmacias.json     13.689 registros
 │   └── prestadores.json    2.520 registros
+├── data/meta.json      Fecha, origen y volumen de cada conjunto
+├── scripts/
+│   ├── fetch_data.py   Descarga los conjuntos oficiales vigentes
+│   ├── build_data.py   Normaliza, carga en SQLite y exporta los JSON
+│   └── check.js        Verificación previa al despliegue
 ├── docs/preview.png    Captura para documentación
 ├── serve.js            Servidor de desarrollo con URLs amigables
 ├── .htaccess           Configuración Apache / cPanel
@@ -126,11 +131,28 @@ Fuentes:
 - Listado de precios de medicamentos para afiliados: <https://datos.gob.ar/dataset/medicamentos-para-afiliados>
 - Cartilla oficial de prestadores: <https://prestadores.pami.org.ar/>
 
-Los archivos originales se distribuyen en XLSX y CSV. El proceso de preparación consistió en normalizar
-codificaciones y nombres de columnas, descartar registros incompletos y serializar el resultado como JSON
-con claves cortas y estables.
+Los archivos originales se distribuyen en XLSX y CSV. La preparación se automatiza con dos scripts:
 
-Los archivos fuente en crudo no se versionan en este repositorio.
+```bash
+python3 scripts/fetch_data.py     # resuelve las URLs vigentes y descarga los crudos a data/raw/
+python3 scripts/build_data.py     # normaliza, carga en SQLite y exporta data/*.json + data/meta.json
+```
+
+`fetch_data.py` consulta la API de datos.gob.ar (`package_show`) y elige el recurso más reciente de cada
+conjunto, guardando un manifiesto de procedencia. `build_data.py` requiere `openpyxl`, carga los datos en
+`data/raw/pami.db`, limpia codificaciones dañadas y serializa los JSON con claves cortas y estables.
+
+Los archivos crudos y la base de trabajo no se versionan; `data/meta.json` deja registrada la fecha de
+cada conjunto y el pie de la aplicación la muestra.
+
+| Conjunto | Datos al | Registros |
+|---|---|---|
+| Medicamentos | 02/10/2026 | 8.734 |
+| Farmacias | 07/07/2022 | 13.689 |
+| Prestadores | 03/08/2022 | 2.520 |
+
+Los dos últimos están pendientes de actualización: los archivos vigentes cambiaron de esquema y requieren
+un remapeo de columnas (ver CHANGELOG).
 
 ---
 

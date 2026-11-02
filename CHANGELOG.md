@@ -4,6 +4,29 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.2.0] — 2026-11-02
+
+### Añadido
+- `scripts/fetch_data.py` y `scripts/build_data.py`: canalización de datos reproducible que resuelve
+  las URLs vigentes en la API de datos.gob.ar, descarga los archivos crudos, los normaliza en una base
+  SQLite de trabajo y exporta los JSON que consume la aplicación.
+- `data/meta.json` con la fecha de actualización, el origen y la cantidad de registros de cada conjunto.
+- El pie muestra la última actualización de los conjuntos oficiales.
+- La verificación de CI valida la coherencia de `data/meta.json` y advierte cuando un conjunto supera
+  los 90 días de antigüedad.
+
+### Cambiado
+- Medicamentos actualizado a la publicación del 02/10/2026 (vigencia 01/10/2026): 574 presentaciones
+  modificadas y 6.586 copagos actualizados respecto de la versión anterior.
+- Se corrigieron los nombres de laboratorio con codificación dañada que eran inequívocos
+  (`Bag¿` → Bagó, `Dom¿nguez` → Domínguez, `Andr¿maco` → AndrÓmaco, `Qu¿mica Luar` → Química Luar,
+  `Cassarß` → Cassará, `Nutricia-Bag¿`, `Bag¿-Arcor`, `KINDERVAL MAX EMULSI¿N`, `LEVECOM SOLUCI¿N`).
+- Los JSON se exportan sin espacios de formato (medicamentos pasa de 1,4 MB a 1,29 MB).
+
+### Pendiente
+- Farmacias: el estándar vigente (agosto 2026) tiene otro esquema y no incluye UGL ni código postal.
+- Prestadores: la versión vigente cambia la estructura a especialidades por UGL y requiere rehacer la vista.
+
 ## [1.1.0] — 2025-11-01
 
 ### Añadido

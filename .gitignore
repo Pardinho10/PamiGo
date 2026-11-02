@@ -2,7 +2,8 @@
 node_modules/
 package-lock.json
 
-# Archivos fuente de datos sin procesar (los JSON generados sí se versionan)
+# Archivos fuente crudos y base de trabajo del ETL (los JSON generados sí se versionan)
+data/raw/
 data/*.xlsx
 data/*.csv
 data/*.xls

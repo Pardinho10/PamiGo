@@ -14,6 +14,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const errors = [];
 const passed = [];
+const warnings = [];
 
 function fail(message) {
   errors.push(message);
@@ -21,6 +22,10 @@ function fail(message) {
 
 function pass(message) {
   passed.push(message);
+}
+
+function warn(message) {
+  warnings.push(message);
 }
 
 function abs(rel) {
@@ -354,6 +359,54 @@ if (exists('.gitignore')) {
 }
 
 /* ------------------------------------------------------------------ */
+/* 9b. Metadatos de actualización de los datos                         */
+/* ------------------------------------------------------------------ */
+
+if (exists('data/meta.json')) {
+  let meta = null;
+  try {
+    meta = readJSON('data/meta.json');
+  } catch (e) {
+    fail('data/meta.json no es JSON válido: ' + e.message);
+  }
+
+  if (meta) {
+    const problems = [];
+    const STALE_DAYS = 90;
+    const hoy = new Date();
+
+    ['medicamentos', 'farmacias', 'prestadores'].forEach(function (dataset) {
+      const entry = meta[dataset];
+      if (!entry) {
+        problems.push(dataset + ' sin entrada de metadatos');
+        return;
+      }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(String(entry.actualizado))) {
+        problems.push(dataset + ' tiene una fecha inválida ("' + entry.actualizado + '")');
+        return;
+      }
+
+      const rows = readJSON('data/' + dataset + '.json');
+      if (entry.registros !== rows.length) {
+        problems.push(dataset + ' declara ' + entry.registros + ' registros pero el JSON tiene ' + rows.length);
+      }
+
+      const dias = Math.floor((hoy - new Date(entry.actualizado + 'T00:00:00')) / 86400000);
+      if (dias > STALE_DAYS) {
+        warn(dataset + ': datos de hace ' + dias + ' días (actualizado ' + entry.actualizado +
+          '). Conviene volver a correr scripts/fetch_data.py y scripts/build_data.py.');
+      }
+    });
+
+    if (problems.length) {
+      problems.forEach(fail);
+    } else {
+      pass('data/meta.json coherente con los tres conjuntos de datos');
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* 10. Presupuesto de transferencia de datos                           */
 /* ------------------------------------------------------------------ */
 
@@ -390,6 +443,10 @@ passed.forEach(function (line) {
   console.log('  OK    ' + line);
 });
 
+warnings.forEach(function (line) {
+  console.log('  AVISO ' + line);
+});
+
 if (errors.length) {
   console.log('');
   errors.forEach(function (line) {
@@ -399,4 +456,5 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('\n' + passed.length + ' verificaciones superadas.\n');
+const resumen = passed.length + ' verificaciones superadas';
+console.log('\n' + resumen + (warnings.length ? ' · ' + warnings.length + ' aviso(s)' : '') + '.\n');

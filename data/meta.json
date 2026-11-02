@@ -1,0 +1,26 @@
+{
+  "medicamentos": {
+    "registros": 8734,
+    "actualizado": "2026-10-02",
+    "fuente": "http://datos.pami.org.ar/dataset/b40f7569-3a23-46bf-8a45-dd7cff41e725/resource/92ad6862-af8e-4047-b2cb-4bfef705feb3/download/afiliados20261001_021010.xlsx",
+    "dataset": "medicamentos-para-afiliados",
+    "archivo": "data/raw/medicamentos.xlsx"
+  },
+  "farmacias": {
+    "registros": 13689,
+    "actualizado": "2022-07-07",
+    "fuente": "http://datos.pami.org.ar/dataset/78ab3d28-083a-4664-8c34-7a22254f2123/resource/d5eda98b-71f5-4e31-9d4c-4dea51833b38/download/listado-de-farmacias-pami-1.csv",
+    "dataset": "farmacias",
+    "archivo": "data/farmacias.csv",
+    "nota": "Padrón de julio 2022. La versión vigente (agosto 2026) tiene otro esquema y requiere remapeo de columnas."
+  },
+  "prestadores": {
+    "registros": 2520,
+    "actualizado": "2022-08-03",
+    "fuente": "http://datos.pami.org.ar/dataset/62eb68ca-3451-453e-9bf0-2a8be84cbe7e/resource/126ce391-b23f-4cf8-9308-6fb0122e3cb4/download/cantidad-de-prestadores-por-ugl-y-modulo.xlsx",
+    "dataset": "listado-de-prestadores",
+    "archivo": "data/prestadores.xlsx",
+    "nota": "Resumen de agosto 2022. La versión vigente (agosto 2026) cambia la estructura a especialidades por UGL."
+  },
+  "generado": "2026-11-02"
+}

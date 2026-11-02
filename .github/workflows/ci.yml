@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Verificar sintaxis de los scripts de datos
+        run: python3 -m py_compile scripts/fetch_data.py scripts/build_data.py
+
       - name: Verificar estructura, datos, versiones y configuración
         run: node scripts/check.js
 
