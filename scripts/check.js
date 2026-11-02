@@ -56,6 +56,7 @@ const REQUIRED = [
   'router.js',
   'favicon.svg',
   'logo.svg',
+  'bg-pattern.svg',
   'site.webmanifest',
   'robots.txt',
   'sitemap.xml',

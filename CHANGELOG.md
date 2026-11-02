@@ -4,6 +4,12 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.5.0] — 2026-11-02
+
+### Cambiado
+- Fondo cálido de la aplicación: base café suave (`#F6F0E5`) con patrón repetible de píldoras,
+  frascos, cruces y pulsos en tonos crema y naranja (`bg-pattern.svg`).
+
 ## [1.4.0] — 2026-11-02
 
 ### Añadido

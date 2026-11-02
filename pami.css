@@ -15,8 +15,8 @@
   --orange-soft: #FEF1E0;
 
   --surface: #FFFFFF;
-  --bg: #F3F5F9;
-  --border: #E1E7F0;
+  --bg: #F6F0E5;
+  --border: #E4DACA;
   --text: #0B2344;
   --muted: #5C6C86;
 
@@ -56,9 +56,11 @@ body::before {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    radial-gradient(42rem 28rem at 88% -10%, rgba(145, 110, 175, 0.16), transparent 70%),
-    radial-gradient(38rem 26rem at 0% 2%, rgba(69, 101, 141, 0.14), transparent 70%);
+  background-color: #F6F0E5;
+  background-image: url("./bg-pattern.svg?v=1.5.0");
+  background-size: 640px 640px;
+  background-repeat: repeat;
+  opacity: 0.5;
 }
 
 .app-shell {

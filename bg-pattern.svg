@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640">
+  <defs>
+    <g id="cap">
+      <g transform="rotate(-38)">
+        <rect x="-34" y="-17" width="68" height="34" rx="17" fill="#FFFFFF" stroke="#D9C6AE" stroke-width="3" />
+        <path d="M0 -17 v34 a17 17 0 0 0 0 -34 Z" fill="#F0B95C" />
+        <rect x="-34" y="-17" width="68" height="34" rx="17" fill="none" stroke="#D9C6AE" stroke-width="3" />
+      </g>
+    </g>
+    <g id="tab">
+      <circle cx="0" cy="0" r="19" fill="#FFFFFF" stroke="#D9C6AE" stroke-width="3" />
+      <line x1="0" y1="-19" x2="0" y2="19" stroke="#D9C6AE" stroke-width="3" />
+    </g>
+    <g id="bot">
+      <rect x="-16" y="-26" width="32" height="52" rx="9" fill="#FFFFFF" stroke="#D9C6AE" stroke-width="3" />
+      <rect x="-16" y="-26" width="32" height="24" rx="9" fill="#F3CF9B" />
+      <rect x="-16" y="-11" width="32" height="9" fill="#F3CF9B" />
+      <rect x="-7" y="-38" width="14" height="12" rx="4" fill="#E8B67F" stroke="#D9C6AE" stroke-width="3" />
+    </g>
+    <g id="mor">
+      <rect x="-20" y="-14" width="40" height="28" rx="14" fill="#FFFFFF" stroke="#D9C6AE" stroke-width="3" />
+      <line x1="0" y1="-14" x2="0" y2="14" stroke="#D9C6AE" stroke-width="3" />
+    </g>
+    <g id="plus">
+      <rect x="-5" y="-16" width="10" height="32" rx="5" fill="#E5CFA8" />
+      <rect x="-16" y="-5" width="32" height="10" rx="5" fill="#E5CFA8" />
+    </g>
+    <g id="pulse">
+      <path d="M-34 0 H-14 L-7 -12 L2 12 L9 -2 H16 L22 -8 L27 4 H34" fill="none"
+        stroke="#E3CBA4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </defs>
+
+  <g opacity="0.85">
+    <use href="#cap" x="80" y="90" transform="rotate(14 80 90)" />
+    <use href="#bot" x="300" y="60" transform="rotate(-10 300 60)" />
+    <use href="#mor" x="520" y="110" transform="rotate(18 520 110)" />
+    <use href="#plus" x="440" y="70" />
+    <use href="#tab" x="180" y="230" />
+    <use href="#plus" x="560" y="260" />
+    <use href="#mor" x="70" y="330" transform="rotate(-16 70 330)" />
+    <use href="#pulse" x="250" y="300" />
+    <use href="#bot" x="430" y="330" transform="rotate(12 430 330)" />
+    <use href="#cap" x="590" y="430" transform="rotate(-22 590 430)" />
+    <use href="#tab" x="330" y="470" />
+    <use href="#plus" x="140" y="500" />
+    <use href="#mor" x="230" y="570" transform="rotate(10 230 570)" />
+    <use href="#bot" x="490" y="540" transform="rotate(-14 490 540)" />
+    <use href="#plus" x="50" y="580" />
+    <use href="#cap" x="610" y="590" transform="rotate(20 610 590)" />
+  </g>
+</svg>
