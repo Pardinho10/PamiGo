@@ -12,6 +12,12 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Tabla de farmacias: en tablet se ocultan Provincia y Departamento para no pedir scroll horizontal.
   Verificado sin scroll en 390, 768, 1024, 1280 y 1440 px.
 
+## [1.7.1] — 2026-11-07
+
+### Cambiado
+- Los botones de contacto de Farmacias y Agencias comparten el mismo criterio: texto completo en
+  pantallas anchas, iconos en angostas. Se elimina el scroll horizontal en la tabla de Agencias.
+
 ## [1.7.0] — 2026-11-07
 
 ### Añadido

@@ -57,7 +57,7 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background-color: #F6F0E5;
-  background-image: url("./bg-pattern.svg?v=1.7.0");
+  background-image: url("./bg-pattern.svg?v=1.7.1");
   background-size: 640px 640px;
   background-repeat: repeat;
   opacity: 0.5;
@@ -581,7 +581,7 @@ body::before {
 }
 
 .contact-link span {
-  display: none;
+  display: inline;
 }
 
 .contact-link:hover {
@@ -590,29 +590,98 @@ body::before {
   color: var(--navy);
 }
 
-.table-farmacias .contact-col {
+/* Contacto se ajusta a su contenido (ver anchos por tabla más abajo) */
+.table-modern .contact-col {
   width: 1%;
   white-space: nowrap;
 }
 
-.table-agencias .contact-col {
-  width: 1%;
-  white-space: nowrap;
-}
 
-/* A partir de 1200 px los botones muestran su texto */
-@media (min-width: 1200px) {
-  .table-farmacias .contact-link span {
-    display: inline;
+/* Farmacias: reparto proporcional de las columnas visibles */
+@media (min-width: 768px) {
+  .table-farmacias th:nth-child(1),
+  .table-farmacias td:nth-child(1) {
+    width: 17%;
+  }
+
+  .table-farmacias th:nth-child(2),
+  .table-farmacias td:nth-child(2) {
+    width: 23%;
+  }
+
+  .table-farmacias th:nth-child(3),
+  .table-farmacias td:nth-child(3) {
+    width: 19%;
+  }
+
+  .table-farmacias th:nth-child(4),
+  .table-farmacias td:nth-child(4) {
+    width: 15%;
+  }
+
+  .table-farmacias th:nth-child(5),
+  .table-farmacias td:nth-child(5) {
+    width: 17%;
+  }
+
+  .table-farmacias .contact-col {
+    width: 9%;
   }
 }
 
-/* En tablet la tabla de farmacias oculta Provincia y Departamento para no pedir scroll */
-@media (min-width: 576px) and (max-width: 991.98px) {
+/* Agencias: reparto proporcional de las columnas visibles */
+@media (min-width: 768px) {
+  .table-agencias th:nth-child(1),
+  .table-agencias td:nth-child(1) {
+    width: 24%;
+  }
+
+  .table-agencias th:nth-child(2),
+  .table-agencias td:nth-child(2) {
+    width: 14%;
+  }
+
+  .table-agencias th:nth-child(3),
+  .table-agencias td:nth-child(3) {
+    width: 13%;
+  }
+
+  .table-agencias th:nth-child(4),
+  .table-agencias td:nth-child(4) {
+    width: 22%;
+  }
+
+  .table-agencias th:nth-child(5),
+  .table-agencias td:nth-child(5) {
+    width: 18%;
+  }
+
+  .table-agencias .contact-col {
+    width: 9%;
+  }
+}
+
+/* A partir de 1200 px la columna de contacto gana espacio para los textos */
+@media (min-width: 1200px) {
+  .table-farmacias .contact-col,
+  .table-agencias .contact-col {
+    width: 13.5rem;
+  }
+}
+
+/* En tablet las tablas ocultan las columnas menos importantes para no pedir scroll */
+@media (min-width: 576px) and (max-width: 1199.98px) {
   .table-farmacias th:nth-child(4),
   .table-farmacias td:nth-child(4),
   .table-farmacias th:nth-child(5),
   .table-farmacias td:nth-child(5) {
+    display: none !important;
+  }
+
+  .table-agencias th:nth-child(2),
+  .table-agencias td:nth-child(2),
+  .table-agencias th:nth-child(4),
+  .table-agencias td:nth-child(4) {
     display: none !important;
   }
 }
@@ -981,6 +1050,10 @@ body::before {
   .table-modern tbody td.contact-col .contact-link {
     justify-content: center;
     margin-right: 0;
+  }
+
+  .table-modern tbody td.contact-col .contact-link span {
+    display: none;
   }
 
   .table-modern tbody td:first-child .fw-bold {
