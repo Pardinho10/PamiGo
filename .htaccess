@@ -33,7 +33,7 @@ ErrorDocument 404 /404.html
 
   # 5) Rutas de la SPA (tabs) -> index.html
   #    Solo estas rutas; el resto cae en la 404 personalizada.
-  RewriteRule ^(medicamentos|farmacias|prestadores|cartilla)/?$ /index.html [L]
+  RewriteRule ^(medicamentos|farmacias|prestadores|agencias|cartilla)/?$ /index.html [L]
 </IfModule>
 
 # --------------------------------------------------------------------------

@@ -133,6 +133,7 @@ nacional y se transforman a JSON para su consumo desde el navegador.
 | Listado de precios de medicamentos para afiliados | 8.734 | droga, marca, presentación, laboratorio, cobertura, copago |
 | Farmacias habilitadas | 15.241 | provincia, departamento, farmacia, dirección, localidad |
 | Prestadores por UGL y especialidad | 4.388 | UGL, especialidad, cantidad de prestadores |
+| Agencias, UGL, CAPs y bocas de atención | 685 | UGL, provincia, tipo de punto, domicilio, localidad |
 
 Fuentes:
 
@@ -160,6 +161,7 @@ cada conjunto y el pie de la aplicación la muestra.
 | Medicamentos | 02/10/2026 | 8.734 |
 | Farmacias | 06/08/2026 | 15.241 |
 | Prestadores | 06/08/2026 | 4.388 |
+| Agencias | 03/08/2022 | 685 |
 
 Dos conjuntos cambiaron de esquema y el constructor los adapta: el padrón de farmacias ya no publica UGL
 ni código postal, y el de prestadores pasó de un resumen por módulo a una apertura por UGL y especialidad.

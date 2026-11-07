@@ -4,6 +4,7 @@
    /medicamentos
    /farmacias
    /prestadores
+   /agencias
    /cartilla
    Funciona con la reescritura del servidor (.htaccess / _redirects / serve.js)
    ========================================================================== */
@@ -16,6 +17,7 @@
     'medicamentos': 'medicamentos',
     'farmacias': 'farmacias',
     'prestadores': 'prestadores',
+    'agencias': 'agencias',
     'cartilla': 'cartilla'
   };
 
@@ -23,6 +25,7 @@
     'medicamentos': '#medicamentos',
     'farmacias': '#farmacias',
     'prestadores': '#prestadores',
+    'agencias': '#agencias',
     'cartilla': '#cartilla'
   };
 

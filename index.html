@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./pami.css?v=1.6.2">
+  <link rel="stylesheet" href="./pami.css?v=1.7.0">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
@@ -84,6 +84,10 @@
               <span class="stat-value" x-text="prestCount.toLocaleString('es-AR')"></span>
               <span class="stat-label">Prestadores</span>
             </div>
+            <div class="stat">
+              <span class="stat-value" x-text="agenCount.toLocaleString('es-AR')"></span>
+              <span class="stat-label">Agencias y UGL</span>
+            </div>
           </div>
         </div>
 
@@ -112,6 +116,13 @@
             role="tab">
             <i class="bi bi-people"></i>
             Prestadores
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="agen-tab" data-bs-toggle="pill" data-bs-target="#agencias" type="button"
+            role="tab">
+            <i class="bi bi-building"></i>
+            Agencias
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -489,6 +500,151 @@
         </section>
       </div>
 
+      <!-- ===================== AGENCIAS ===================== -->
+      <div class="tab-pane fade" id="agencias" role="tabpanel">
+        <section class="panel">
+          <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label" for="agenProv">Provincia</label>
+              <select class="form-select" id="agenProv" x-model="agenProvincia" @change="onAgenProvinciaChange()">
+                <option value="">Todas las provincias</option>
+                <template x-for="pr in agenProvincias" :key="pr">
+                  <option :value="pr" x-text="pr"></option>
+                </template>
+              </select>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <label class="form-label" for="agenCity">Localidad</label>
+              <select class="form-select" id="agenCity" x-model="agenCiudad" @change="filterAgen()">
+                <option value="">Todas las localidades</option>
+                <template x-for="ci in agenCiudades" :key="ci">
+                  <option :value="ci" x-text="ci"></option>
+                </template>
+              </select>
+            </div>
+            <div class="col-12 col-md-6 col-lg-2">
+              <label class="form-label" for="agenTipo">Tipo</label>
+              <select class="form-select" id="agenTipo" x-model="agenTipo" @change="filterAgen()">
+                <option value="">Todos</option>
+                <template x-for="tipo in agenTipos" :key="tipo">
+                  <option :value="tipo" x-text="tipo"></option>
+                </template>
+              </select>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label" for="agenQuery">Agencia o dirección</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input class="form-control" id="agenQuery" type="search" placeholder="Ej.: BELGRANO, CONCEPCIÓN…"
+                  x-model="agenQuery" @input="filterAgen()">
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-meta">
+            <p>
+              Mostrando <span class="count" x-text="agenPaged.length"></span>
+              de <span class="count" x-text="agenFiltered.length"></span> resultado(s)
+              <span class="data-date" x-show="fechas.agencias" x-cloak>
+                · datos oficiales al <span x-text="fechas.agencias"></span>
+              </span>
+            </p>
+            <div class="meta-actions">
+              <button class="btn btn-ghost btn-sm" type="button" @click="clearAgen()">
+                <i class="bi bi-arrow-clockwise me-1"></i>
+                Limpiar
+              </button>
+              <div class="page-size">
+                <span>Registros por página</span>
+                <select class="form-select w-auto" x-model.number="agenPageSize" @change="setAgenPageSize()">
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel panel--flush">
+          <div class="table-responsive" x-show="agenFiltered.length > 0">
+            <table class="table-modern table-agencias">
+              <thead>
+                <tr>
+                  <th>Agencia</th>
+                  <th class="d-none d-md-table-cell">UGL</th>
+                  <th class="d-none d-sm-table-cell">Tipo</th>
+                  <th class="d-none d-md-table-cell">Dirección</th>
+                  <th>Localidad</th>
+                  <th class="d-none d-md-table-cell">Provincia</th>
+                  <th class="contact-col">Contacto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="(a, idx) in agenPaged" :key="a.entidad + '|' + a.domicilio + '|' + a.localidad + '|' + idx">
+                  <tr>
+                    <td data-label="Agencia"><span class="fw-bold" x-text="a.entidad"></span></td>
+                    <td class="d-none d-md-table-cell" data-label="UGL">
+                      <span class="id-chip" :class="{ 'is-empty': !a.ugl_desc }"
+                        x-text="a.ugl_desc || '—'"></span>
+                    </td>
+                    <td class="d-none d-sm-table-cell" data-label="Tipo">
+                      <span class="badge-cob"><span x-text="a.tipo"></span></span>
+                    </td>
+                    <td class="d-none d-md-table-cell" data-label="Dirección" x-text="a.domicilio"></td>
+                    <td data-label="Localidad" x-text="a.localidad"></td>
+                    <td class="d-none d-md-table-cell" data-label="Provincia" x-text="a.provincia"></td>
+                    <td class="contact-col" data-label="Contacto">
+                      <a class="contact-link" :href="agenMapsUrl(a)" target="_blank" rel="noopener"
+                        :aria-label="'Cómo llegar a ' + a.entidad">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Cómo llegar</span>
+                      </a>
+                      <a class="contact-link" :href="agenPhoneSearchUrl(a)" target="_blank" rel="noopener"
+                        :aria-label="'Buscar el teléfono de ' + a.entidad">
+                        <i class="bi bi-telephone"></i>
+                        <span>Buscar teléfono</span>
+                      </a>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" x-show="agenFiltered.length === 0">
+            <i class="bi bi-search fs-2"></i>
+            <h2>Sin resultados</h2>
+            <p>Probá con otra provincia, localidad o tipo de agencia.</p>
+          </div>
+
+          <div class="table-foot" x-show="agenFiltered.length > 0">
+            <div class="page-info">
+              Página <strong x-text="agenPage"></strong> de <strong x-text="agenTotalPages"></strong>
+            </div>
+            <div class="pager">
+              <button class="btn btn-ghost btn-sm" type="button" @click="agenPage = Math.max(1, agenPage - 1)"
+                :disabled="agenPage === 1">
+                <i class="bi bi-chevron-left me-1"></i>
+                Anterior
+              </button>
+              <button class="btn btn-ghost btn-sm" type="button"
+                @click="agenPage = Math.min(agenTotalPages, agenPage + 1)" :disabled="agenPage === agenTotalPages">
+                Siguiente
+                <i class="bi bi-chevron-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+
+          <p class="hint">
+            <i class="bi bi-info-circle"></i>
+            <span>El padrón oficial no informa teléfono ni trámites por agencia. Los botones hacen una búsqueda
+              externa conel domicilio y la provincia.</span>
+          </p>
+        </section>
+      </div>
+
       <!-- ===================== CARTILLA ===================== -->
       <div class="tab-pane fade" id="cartilla" role="tabpanel">
         <section class="panel panel--tint">
@@ -539,7 +695,7 @@
             </g>
           </svg>
           <div>
-            <p class="footer-name">PamiGo <span class="footer-version">v1.6.2</span></p>
+            <p class="footer-name">PamiGo <span class="footer-version">v1.7.0</span></p>
             <p class="footer-credit">
               Desarrollado por <strong>Jorge Ariel Pardo</strong>
             </p>
@@ -562,8 +718,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./pami.js?v=1.6.2"></script>
-  <script src="./router.js?v=1.6.2"></script>
+  <script src="./pami.js?v=1.7.0"></script>
+  <script src="./router.js?v=1.7.0"></script>
 </body>
 
 </html>

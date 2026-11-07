@@ -20,5 +20,12 @@
     "dataset": "listado-de-prestadores",
     "archivo": "data/raw/prestadores.xlsx"
   },
-  "generado": "2026-11-02"
+  "generado": "2026-11-07",
+  "agencias": {
+    "registros": 685,
+    "actualizado": "2022-08-03",
+    "fuente": "http://datos.pami.org.ar/dataset/6fda9ef9-7dab-4a1a-879d-a963f05c7fde/resource/f6e33659-84c9-4e97-a271-f9023c8c891c/download/listado-de-agencias-.xlsx",
+    "dataset": "agencias-ugls",
+    "archivo": "data/raw/agencias.xlsx"
+  }
 }

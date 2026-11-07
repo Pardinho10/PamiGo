@@ -12,6 +12,17 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Tabla de farmacias: en tablet se ocultan Provincia y Departamento para no pedir scroll horizontal.
   Verificado sin scroll en 390, 768, 1024, 1280 y 1440 px.
 
+## [1.7.0] — 2026-11-07
+
+### Añadido
+- Vista "Agencias" con los puntos de atención de PAMI: agencias locales, sedes de UGL, CAPs y bocas de
+  atención (685 registros), con dirección, localidad, provincia, tipo y los botones de contacto de
+  Farmacias ("Cómo llegar" y "Buscar teléfono").
+- Filtros por provincia, localidad, tipo y búsqueda de texto, con paginación y fecha oficial en la barra
+  de resultados.
+- Una cuarta métrica en el hero y nueva ruta `/agencias` en el router y en las configuraciones de
+  despliegue.
+
 ## [1.6.1] — 2026-11-04
 
 ### Cambiado

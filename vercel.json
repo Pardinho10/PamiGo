@@ -11,7 +11,8 @@
     { "source": "/medicamentos", "destination": "/" },
     { "source": "/farmacias", "destination": "/" },
     { "source": "/prestadores", "destination": "/" },
-    { "source": "/cartilla", "destination": "/" }
+    { "source": "/cartilla", "destination": "/" },
+    { "source": "/agencias", "destination": "/" }
   ],
   "headers": [
     {

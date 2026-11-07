@@ -135,6 +135,16 @@ def export_medicamentos(connection):
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
+# Numerales romanos del catálogo -> número arábigo usado por el padrón
+ROMANOS = {
+    'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 8,
+    'IX': 9, 'X': 10, 'XI': 11, 'XII': 12, 'XIII': 13, 'XIV': 14, 'XV': 15,
+    'XVI': 16, 'XVII': 17, 'XVIII': 18, 'XIX': 19, 'XX': 20, 'XXI': 21, 'XXII': 22,
+    'XXIII': 23, 'XXIV': 24, 'XXV': 25, 'XXVI': 26, 'XXVII': 27, 'XXVIII': 28, 'XXIX': 29,
+    'XXX': 30, 'XXXI': 31, 'XXXII': 32, 'XXXIII': 33, 'XXXIV': 34, 'XXXV': 35,
+    'XXXVI': 36, 'XXXVII': 37, 'XXXVIII': 38,
+}
+
 # Provincia a la que pertenece la cabecera de cada UGL (el catálogo nombra la ciudad, no la provincia).
 UGL_PROVINCIA = {
     'TUCUMAN': 'TUCUMAN',
@@ -162,6 +172,7 @@ UGL_PROVINCIA = {
     'SALTA': 'SALTA',
     'CHACO': 'CHACO',
     'SGO DEL ESTERO': 'SANTIAGO DEL ESTERO',
+    'SANTIAGO DEL ESTERO': 'SANTIAGO DEL ESTERO',
     'NEUQUEN': 'NEUQUEN',
     'CHUBUT': 'CHUBUT',
     'MISIONES': 'MISIONES',
@@ -217,12 +228,17 @@ def load_ugl_catalog():
         provincia = UGL_PROVINCIA.get(zona.upper())
         if not provincia:
             continue
-        catalog[slug(zona)] = {
-            'id': numero,
+        numero_arabigo = str(ROMANOS.get(numero, numero)).strip()
+        # 1) por número arábigo: es la clave del padrón y de farmacias
+        catalog[numero_arabigo] = {
+            'id': numero_arabigo,
             'zona': zona,
             'provincia': provincia,
             'label': label,
         }
+        # 2) por numeral romano y por zona, como alias
+        catalog.setdefault(numero, catalog[numero_arabigo])
+        catalog.setdefault(slug(zona), catalog[numero_arabigo])
     return catalog
 
 
@@ -364,10 +380,87 @@ def export_prestadores(connection):
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
+
+def load_agencias(connection, catalog=None):
+    """Listado de UGLs, CAPs, agencias y bocas de atención (vigente).
+
+    Dos recursos del mismo dataset se cruzan: el catálogo de UGL (zona y
+    provincia) y el listado de agencias con domicilio y coordenadas.
+    """
+    por_zona = catalog or {}
+    # catálogo de sedes UGL: domicilio y vínculo por zona
+    import openpyxl
+
+    wb = openpyxl.load_workbook(os.path.join(RAW, 'ugls.xlsx'), read_only=True, data_only=True)
+    sedes = {}
+    for row in wb[wb.sheetnames[0]].iter_rows(values_only=True):
+        if not row or not row[0] or ' - ' not in str(row[0]):
+            continue
+        zona = str(row[0]).split(' - ', 1)[1].strip()
+        entry = por_zona.get(slug(zona))
+        if entry and entry['id'] not in sedes:
+            sedes[entry['id']] = {'domicilio': clean(row[2]), 'vinculo': clean(row[3])}
+    wb.close()
+
+    # listado de agencias con domicilio, localidad y coordenadas
+    wb = openpyxl.load_workbook(os.path.join(RAW, 'agencias.xlsx'), read_only=True, data_only=True)
+    agrows = [r for r in wb[wb.sheetnames[0]].iter_rows(values_only=True)
+              if any(c is not None for c in r)]
+    wb.close()
+
+    connection.execute('DROP TABLE IF EXISTS agencias')
+    connection.execute("""
+        CREATE TABLE agencias (
+            ugl_id TEXT, ugl_desc TEXT, provincia TEXT,
+            entidad TEXT, tipo TEXT, domicilio TEXT, localidad TEXT
+        )
+    """)
+
+    records = []
+    for row in agrows[3:]:
+        nombre = clean(row[3])
+        if not nombre:
+            continue
+        entry = None
+        ugl_id = str(row[0]).strip() if row[0] is not None else ''
+        if ugl_id in por_zona:
+            entry = por_zona[ugl_id]
+        else:
+            zona = clean(row[1])
+            entry = por_zona.get(slug(zona))
+        provincia = entry['provincia'] if entry else ''
+        zona_desc = entry['zona'] if entry else zona
+        tipo = 'AGENCIA'
+        if nombre.upper().startswith('CAP'):
+            tipo = 'CAP'
+        elif nombre.upper().startswith('BOCA'):
+            tipo = 'BOCA'
+        elif nombre.upper().startswith('UGL'):
+            tipo = 'UGL'
+        localidad = clean(row[7]) if len(row) > 7 else ''
+        domicilio = clean(row[4])
+        records.append([ugl_id, zona_desc, provincia, nombre, tipo, domicilio, localidad])
+
+    connection.executemany('INSERT INTO agencias VALUES (?,?,?,?,?,?,?)', records)
+    connection.commit()
+    return len(records)
+
+
+def export_agencias(connection):
+    cursor = connection.execute("""
+        SELECT ugl_id, ugl_desc, provincia, entidad, tipo, domicilio, localidad
+        FROM agencias
+        ORDER BY provincia COLLATE NOCASE, localidad COLLATE NOCASE, entidad COLLATE NOCASE
+    """)
+    columns = [description[0] for description in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
 BUILDERS = {
     'medicamentos': (load_medicamentos, export_medicamentos),
     'farmacias': (load_farmacias, export_farmacias),
     'prestadores': (load_prestadores, export_prestadores),
+    'agencias': (load_agencias, export_agencias),
 }
 
 

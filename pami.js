@@ -20,7 +20,23 @@ function pamiApp() {
     medCoberturas: [],
     medCount: 0,
     dataUpdated: '',
-    fechas: { medicamentos: '', farmacias: '', prestadores: '' },
+    fechas: { medicamentos: '', farmacias: '', prestadores: '', agencias: '' },
+
+    agen: [],
+    agenFiltered: [],
+    agenPaged: [],
+    agenQuery: '',
+    agenProvincia: '',
+    agenCiudad: '',
+    agenTipo: '',
+    agenProvincias: [],
+    agenCiudades: [],
+    agenTipos: ['UGL', 'CAP', 'AGENCIA', 'BOCA'],
+    agenCount: 0,
+    agenPage: 1,
+    agenPageSize: 20,
+    agenTotalPages: 1,
+    _agen_ciudadesPorProv: {},
     medPage: 1,
     medPageSize: 20,
     medTotalPages: 1,
@@ -78,14 +94,16 @@ function pamiApp() {
 
     async loadData() {
       try {
-        const [mRes, pRes, fRes] = await Promise.all([
+        const [mRes, pRes, fRes, aRes] = await Promise.all([
           fetch('./data/medicamentos.json', { cache: 'no-store' }),
           fetch('./data/prestadores.json', { cache: 'no-store' }),
-          fetch('./data/farmacias.json', { cache: 'no-store' })
+          fetch('./data/farmacias.json', { cache: 'no-store' }),
+          fetch('./data/agencias.json', { cache: 'no-store' })
         ]);
         const medicamentos = await mRes.json();
         const prestadores = await pRes.json();
         const farmacias = await fRes.json();
+        const agencias = await aRes.json();
 
         // Índices de búsqueda normalizados (se calculan una sola vez)
         this.meds = medicamentos.map(m => Object.assign(m, {
@@ -98,14 +116,20 @@ function pamiApp() {
         this.farms = farmacias.map(f => Object.assign(f, {
           _busqueda: norm([f.farmacia_desc, f.farmacia_direcc, f.farmacia_localid].join(' '))
         }));
+        this.agen = agencias.map(a => Object.assign(a, {
+          _busqueda: norm([a.entidad, a.domicilio, a.localidad].join(' '))
+        }));
         this.medCount = this.meds.length;
         this.prestCount = this.prests.length;
         this.farmCount = this.farms.length;
+        this.agenCount = this.agen.length;
         this.buildFarmFilters();
         this.buildMedFilters();
+        this.buildAgenFilters();
         this.filterMeds();
         this.filterPrest();
         this.filterFarm();
+        this.filterAgen();
       } catch (e) {
         console.error('Error cargando datos', e);
       }
@@ -142,6 +166,94 @@ function pamiApp() {
       } else {
         this.farmCiudades = [];
       }
+    },
+
+    /** Construye provincias y localidades de agencias, y el índice corto. */
+    buildAgenFilters() {
+      const provincias = new Set();
+      const porProv = {};
+      for (const a of this.agen) {
+        const prov = (a.provincia || '').toString().trim();
+        const city = (a.localidad || '').toString().trim();
+        if (!prov) continue;
+        provincias.add(prov);
+        if (!porProv[prov]) porProv[prov] = new Set();
+        if (city) porProv[prov].add(city);
+      }
+      this._agen_ciudadesPorProv = {};
+      for (const [prov, set] of Object.entries(porProv)) {
+        this._agen_ciudadesPorProv[prov] = [...set].sort((x, y) => x.localeCompare(y, 'es'));
+      }
+      this.agenProvincias = [...provincias].sort((x, y) => x.localeCompare(y, 'es'));
+      this.updateAgenCiudades();
+    },
+
+    updateAgenCiudades() {
+      if (!this.agenProvincia) {
+        const todas = new Set();
+        for (const set of Object.values(this._agen_ciudadesPorProv)) {
+          for (const ciudad of set) todas.add(ciudad);
+        }
+        this.agenCiudades = [...todas].sort((x, y) => x.localeCompare(y, 'es'));
+      } else {
+        this.agenCiudades = this._agen_ciudadesPorProv[this.agenProvincia] || [];
+      }
+    },
+
+    onAgenProvinciaChange() {
+      this.agenCiudad = '';
+      this.updateAgenCiudades();
+      this.agenPage = 1;
+      this.filterAgen();
+    },
+
+    filterAgen() {
+      const q = norm(this.agenQuery);
+      const prov = (this.agenProvincia || '').toString().trim().toLowerCase();
+      const city = (this.agenCiudad || '').toString().trim().toLowerCase();
+      const tipo = (this.agenTipo || '').toString().trim();
+      let res = this.agen;
+      if (prov) res = res.filter(a => (a.provincia || '').toString().toLowerCase() === prov);
+      if (city) res = res.filter(a => (a.localidad || '').toString().toLowerCase() === city);
+      if (tipo) res = res.filter(a => a.tipo === tipo);
+      if (q) res = res.filter(a => a._busqueda.includes(q));
+      this.agenFiltered = res;
+      this.agenPage = 1;
+      this.paginateAgen();
+    },
+
+    clearAgen() {
+      this.agenQuery = '';
+      this.agenProvincia = '';
+      this.agenCiudad = '';
+      this.agenTipo = '';
+      this.updateAgenCiudades();
+      this.filterAgen();
+    },
+
+    setAgenPageSize() {
+      this.agenPage = 1;
+      this.paginateAgen();
+    },
+
+    paginateAgen() {
+      const size = Number(this.agenPageSize) || 20;
+      this.agenTotalPages = Math.max(1, Math.ceil(this.agenFiltered.length / size));
+      if (this.agenPage > this.agenTotalPages) this.agenPage = this.agenTotalPages;
+      const start = (this.agenPage - 1) * size;
+      this.agenPaged = this.agenFiltered.slice(start, start + size);
+    },
+
+    /** Enlace a Google Maps para la agencia: nombre + dirección + localidad + provincia. */
+    agenMapsUrl(a) {
+      const partes = [a.entidad || '', a.domicilio || '', a.localidad || '', a.provincia || '', 'Argentina'].filter(Boolean);
+      return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(partes.join(' '));
+    },
+
+    /** Enlace a la búsqueda web para obtener el teléfono más reciente de la agencia. */
+    agenPhoneSearchUrl(a) {
+      const partes = [a.entidad || '', a.domicilio || '', a.localidad || '', a.provincia || '', 'teléfono'].filter(Boolean);
+      return 'https://www.google.com/search?q=' + encodeURIComponent(partes.join(' ')) + '&hl=es';
     },
 
     onFarmProvinciaChange() {

@@ -6,6 +6,7 @@
 /farmacias       /index.html        200
 /prestadores     /index.html        200
 /cartilla        /index.html        200
+/agencias        /index.html        200
 
 # /pagina.html -> /pagina (301)
 /:page.html      /:page             301

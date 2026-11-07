@@ -68,7 +68,8 @@ const REQUIRED = [
   'package.json',
   'data/medicamentos.json',
   'data/farmacias.json',
-  'data/prestadores.json'
+  'data/prestadores.json',
+  'data/agencias.json'
 ];
 
 const missing = REQUIRED.filter(function (file) {
@@ -91,7 +92,8 @@ const JSON_FILES = [
   'site.webmanifest',
   'data/medicamentos.json',
   'data/farmacias.json',
-  'data/prestadores.json'
+  'data/prestadores.json',
+  'data/agencias.json'
 ];
 
 JSON_FILES.forEach(function (file) {
@@ -143,6 +145,12 @@ const DATASETS = [
     min: 100,
     key: 'ugl_desc',
     fields: ['ugl_id', 'ugl_desc', 'modulo_pami_desc', 'q_prestadores']
+  },
+  {
+    file: 'data/agencias.json',
+    min: 100,
+    key: 'entidad',
+    fields: ['ugl_id', 'ugl_desc', 'provincia', 'entidad', 'tipo', 'domicilio', 'localidad']
   }
 ];
 
@@ -379,7 +387,7 @@ if (exists('data/meta.json')) {
     const STALE_DAYS = 90;
     const hoy = new Date();
 
-    ['medicamentos', 'farmacias', 'prestadores'].forEach(function (dataset) {
+    ['medicamentos', 'farmacias', 'prestadores', 'agencias'].forEach(function (dataset) {
       const entry = meta[dataset];
       if (!entry) {
         problems.push(dataset + ' sin entrada de metadatos');
@@ -419,7 +427,8 @@ const BUDGET_GZIP = 800 * 1024;
 let rawTotal = 0;
 let gzipTotal = 0;
 
-['data/medicamentos.json', 'data/farmacias.json', 'data/prestadores.json'].forEach(function (file) {
+['data/medicamentos.json', 'data/farmacias.json', 'data/prestadores.json',
+  'data/agencias.json'].forEach(function (file) {
   if (!exists(file)) return;
   const buffer = fs.readFileSync(abs(file));
   rawTotal += buffer.length;
