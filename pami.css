@@ -57,7 +57,7 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background-color: #F6F0E5;
-  background-image: url("./bg-pattern.svg?v=1.6.1");
+  background-image: url("./bg-pattern.svg?v=1.6.2");
   background-size: 640px 640px;
   background-repeat: repeat;
   opacity: 0.5;
@@ -469,7 +469,6 @@ body::before {
 
 .table-modern {
   width: 100%;
-  table-layout: fixed;
   margin: 0;
   font-size: 0.92rem;
   border-collapse: collapse;
@@ -477,7 +476,7 @@ body::before {
 
 .table-modern th,
 .table-modern td {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   white-space: normal;
 }
 
@@ -515,6 +514,7 @@ body::before {
   border-bottom: 0;
 }
 
+/* Elementos que deben permanecer en una línea */
 .badge-cob {
   display: inline-flex;
   align-items: center;
@@ -525,10 +525,21 @@ body::before {
   color: #6B4B87;
   font-size: 0.78rem;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .badge-cob i {
   color: var(--purple);
+}
+
+.id-chip {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.3rem;
+  background: var(--blue-soft);
+  color: var(--navy);
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .id-chip.is-empty {
@@ -537,86 +548,11 @@ body::before {
   font-weight: 400;
 }
 
-@media (min-width: 576px) {
-  .table-farmacias th:nth-child(1),
-  .table-farmacias td:nth-child(1) {
-    width: 16%;
-  }
-
-  .table-farmacias th:nth-child(2),
-  .table-farmacias td:nth-child(2) {
-    width: 24%;
-  }
-
-  .table-farmacias th:nth-child(3),
-  .table-farmacias td:nth-child(3) {
-    width: 19%;
-  }
-
-  .table-farmacias th:nth-child(4),
-  .table-farmacias td:nth-child(4) {
-    width: 16%;
-  }
-
-  .table-farmacias th:nth-child(5),
-  .table-farmacias td:nth-child(5) {
-    width: 17%;
-  }
-}
-
-.table-modern .contact-col {
-  width: 8%;
-  white-space: nowrap;
-}
-
-@media (min-width: 1200px) {
-  .table-modern .contact-col {
-    width: 13rem;
-  }
-
-  .contact-link span {
-    display: inline;
-  }
-}
-
-@media (min-width: 1200px) {
-    .table-modern.table-farmacias .contact-col {
-      width: 13rem;
-    }
-  }
-}
-
-@media (min-width: 992px) {
-  .table-modern thead th,
-  .table-modern tbody td {
-    white-space: normal;
-  }
-
-  .badge-cob,
-  .id-chip,
-  .table-modern .contact-col {
-    white-space: nowrap;
-  }
-
-  .contact-link {
-    margin-right: 0.42rem;
-    padding: 0.24rem 0.52rem;
-  }
-
-  .contact-link span {
-    display: none;
-  }
-}
-
-@media (min-width: 1200px) {
-  .contact-link span {
-    display: inline;
-  }
-
-  .table-modern .contact-col {
-    width: 15rem;
-  }
-}
+/* --------------------------------------------------------------------------
+   Contacto (tabla de farmacias)
+   La columna se ajusta a su contenido (width: 1% + nowrap) y los textos de los
+   botones aparecen recién cuando hay ancho suficiente.
+   -------------------------------------------------------------------------- */
 
 .contact-link {
   display: inline-flex;
@@ -631,14 +567,11 @@ body::before {
   font-size: 0.8rem;
   font-weight: 700;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .contact-link:last-child {
   margin-right: 0;
-}
-
-.contact-link span {
-  display: none;
 }
 
 .contact-link i {
@@ -647,25 +580,36 @@ body::before {
   flex: 0 0 auto;
 }
 
-@media (min-width: 1200px) {
-  .table-modern .contact-col {
-    width: 15.5rem;
-  }
-
-  .contact-link {
-    margin-right: 0.45rem;
-    padding: 0.22rem 0.45rem;
-  }
-
-  .contact-link span {
-    display: none;
-  }
+.contact-link span {
+  display: none;
 }
 
 .contact-link:hover {
   border-color: var(--orange);
   background: var(--orange-soft);
   color: var(--navy);
+}
+
+.table-farmacias .contact-col {
+  width: 1%;
+  white-space: nowrap;
+}
+
+/* A partir de 1200 px los botones muestran su texto */
+@media (min-width: 1200px) {
+  .table-farmacias .contact-link span {
+    display: inline;
+  }
+}
+
+/* En tablet la tabla de farmacias oculta Provincia y Departamento para no pedir scroll */
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .table-farmacias th:nth-child(4),
+  .table-farmacias td:nth-child(4),
+  .table-farmacias th:nth-child(5),
+  .table-farmacias td:nth-child(5) {
+    display: none !important;
+  }
 }
 
 .copago {

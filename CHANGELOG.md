@@ -4,6 +4,14 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.6.2] — 2026-11-04
+
+### Cambiado
+- Los botones de contacto muestran su texto ("Cómo llegar", "Buscar teléfono") desde 1200 px; por debajo
+  quedan como iconos.
+- Tabla de farmacias: en tablet se ocultan Provincia y Departamento para no pedir scroll horizontal.
+  Verificado sin scroll en 390, 768, 1024, 1280 y 1440 px.
+
 ## [1.6.1] — 2026-11-04
 
 ### Cambiado
