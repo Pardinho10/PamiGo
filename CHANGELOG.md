@@ -4,6 +4,13 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.6.1] — 2026-11-04
+
+### Cambiado
+- Se retira la columna UGL de la tabla de farmacias: el padrón vigente no la informa y el valor derivado
+  del catálogo de agencias era ambiguo. Las seis columnas restantes se reparten con anchos proporcionales.
+- La tabla de farmacias deja de usar scroll horizontal en escritorio y en mobile.
+
 ## [1.6.0] — 2026-11-04
 
 ### Añadido

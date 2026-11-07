@@ -7,7 +7,7 @@ sobre los conjuntos de datos abiertos publicados por el organismo.
 Es un sitio estático: no requiere backend, servidor de aplicaciones ni base de datos. La búsqueda, el
 filtrado y la paginación se resuelven íntegramente en el navegador.
 
-Versión actual: **1.6.0**
+Versión actual: **1.6.1**
 
 ![Vista de escritorio de PamiGo](docs/preview.png)
 
@@ -34,8 +34,6 @@ Versión actual: **1.6.0**
 - Búsqueda de texto libre sobre nombre, dirección y localidad.
 - Departamento como columna de referencia territorial (reemplaza al código postal, que el padrón vigente
   ya no publica).
-- UGL derivada del listado de agencias cuando la provincia tiene una única unidad, con aviso explícito en
-  la interfaz.
 - Acciones de contacto por farmacia: enlace a Google Maps ("Cómo llegar") y a la búsqueda web
   ("Buscar teléfono"), armados con nombre, dirección, localidad y provincia. No se almacena ningún número:
   el enlace abre la búsqueda y el usuario toma el dato de la fuente.
@@ -132,7 +130,7 @@ nacional y se transforman a JSON para su consumo desde el navegador.
 | Conjunto | Registros | Campos principales |
 |---|---|---|
 | Listado de precios de medicamentos para afiliados | 8.734 | droga, marca, presentación, laboratorio, cobertura, copago |
-| Farmacias habilitadas | 15.241 | provincia, departamento, farmacia, dirección, localidad, UGL derivada |
+| Farmacias habilitadas | 15.241 | provincia, departamento, farmacia, dirección, localidad |
 | Prestadores por UGL y especialidad | 4.388 | UGL, especialidad, cantidad de prestadores |
 
 Fuentes:
@@ -164,8 +162,7 @@ cada conjunto y el pie de la aplicación la muestra.
 
 Dos conjuntos cambiaron de esquema y el constructor los adapta: el padrón de farmacias ya no publica UGL
 ni código postal, y el de prestadores pasó de un resumen por módulo a una apertura por UGL y especialidad.
-La UGL de cada farmacia se deduce del listado de agencias sólo cuando la provincia tiene una única unidad;
-Buenos Aires, Santa Fe, Córdoba y Entre Ríos tienen varias y el padrón no informa la asignación.
+El padrón vigente no informa la UGL de cada boca de atención, por lo que no se muestra.
 
 ---
 
