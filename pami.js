@@ -295,6 +295,30 @@ function pamiApp() {
       this.paginateFarm();
     },
 
+    /** Enlace a Google Maps con nombre, dirección, localidad y provincia (no guarda ningún dato). */
+    mapsUrl(f) {
+      const partes = [
+        'Farmacia ' + (f.farmacia_desc || ''),
+        f.farmacia_direcc || '',
+        f.farmacia_localid || '',
+        f.provincia_id || '',
+        'Argentina'
+      ].filter(Boolean);
+      return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(partes.join(' '));
+    },
+
+    /** Enlace a la búsqueda web para conseguir el teléfono publicado de la farmacia. */
+    phoneSearchUrl(f) {
+      const partes = [
+        'Farmacia ' + (f.farmacia_desc || ''),
+        f.farmacia_direcc || '',
+        f.farmacia_localid || '',
+        f.provincia_id || '',
+        'teléfono'
+      ].filter(Boolean);
+      return 'https://www.google.com/search?q=' + encodeURIComponent(partes.join(' ')) + '&hl=es';
+    },
+
     paginateFarm() {
       const size = Number(this.farmPageSize) || 20;
       this.farmTotalPages = Math.max(1, Math.ceil(this.farmFiltered.length / size));

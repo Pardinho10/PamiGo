@@ -7,7 +7,7 @@ sobre los conjuntos de datos abiertos publicados por el organismo.
 Es un sitio estático: no requiere backend, servidor de aplicaciones ni base de datos. La búsqueda, el
 filtrado y la paginación se resuelven íntegramente en el navegador.
 
-Versión actual: **1.5.1**
+Versión actual: **1.6.0**
 
 ![Vista de escritorio de PamiGo](docs/preview.png)
 
@@ -36,6 +36,9 @@ Versión actual: **1.5.1**
   ya no publica).
 - UGL derivada del listado de agencias cuando la provincia tiene una única unidad, con aviso explícito en
   la interfaz.
+- Acciones de contacto por farmacia: enlace a Google Maps ("Cómo llegar") y a la búsqueda web
+  ("Buscar teléfono"), armados con nombre, dirección, localidad y provincia. No se almacena ningún número:
+  el enlace abre la búsqueda y el usuario toma el dato de la fuente.
 - Paginación con el mismo comportamiento que la tabla de medicamentos.
 
 ### Prestadores

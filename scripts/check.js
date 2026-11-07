@@ -196,6 +196,9 @@ PAGES.forEach(function (page) {
   }
 
   const local = refs.filter(function (ref) {
+    // :href="funcion(...)" es un enlace Alpine generado en cliente, no un archivo local
+    if (/^[A-Za-z_$][\w$]*\(/.test(ref)) return false;
+    if (/^[A-Za-z_$][\w$]*\.[A-Za-z_$]/.test(ref)) return false;
     return !/^(https?:)?\/\//.test(ref) && !/^(data:|mailto:|tel:|#)/.test(ref);
   });
 

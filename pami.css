@@ -57,7 +57,7 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background-color: #F6F0E5;
-  background-image: url("./bg-pattern.svg?v=1.5.1");
+  background-image: url("./bg-pattern.svg?v=1.6.0");
   background-size: 640px 640px;
   background-repeat: repeat;
   opacity: 0.5;
@@ -535,6 +535,39 @@ body::before {
   font-weight: 400;
 }
 
+.table-modern .contact-col {
+  white-space: nowrap;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-right: 0.85rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  color: var(--navy);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.contact-link:last-child {
+  margin-right: 0;
+}
+
+.contact-link i {
+  color: var(--orange);
+  font-size: 0.95rem;
+}
+
+.contact-link:hover {
+  border-color: var(--orange);
+  background: var(--orange-soft);
+  color: var(--navy);
+}
+
 .copago {
   font-weight: 900;
   color: var(--navy);
@@ -859,6 +892,22 @@ body::before {
 
   .table-modern tbody td:first-child[data-label]::before {
     display: none;
+  }
+
+  .table-modern tbody td.contact-col {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.45rem;
+    padding-top: 0.45rem !important;
+  }
+
+  .table-modern tbody td.contact-col::before {
+    display: none;
+  }
+
+  .table-modern tbody td.contact-col .contact-link {
+    justify-content: center;
+    margin-right: 0;
   }
 
   .table-modern tbody td:first-child .fw-bold {

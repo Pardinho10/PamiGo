@@ -4,6 +4,13 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.6.0] — 2026-11-04
+
+### Añadido
+- En la tabla de farmacias, columna Contacto con dos enlaces por farmacia: "Cómo llegar" (Google Maps)
+  y "Buscar teléfono" (búsqueda web). Se arman con los datos que ya informa el padrón oficial, sin guardar
+  números ni depender de fuentes externas.
+
 ## [1.5.1] — 2026-11-02
 
 ### Cambiado
