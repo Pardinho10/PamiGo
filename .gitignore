@@ -1,28 +1,26 @@
 # Dependencias
 node_modules/
 package-lock.json
-
 # Archivos fuente crudos y base de trabajo del ETL (los JSON generados sí se versionan)
 data/raw/
 data/*.xlsx
 data/*.csv
 data/*.xls
-
 # Archivos con datos personales (nunca publicar)
 data/afiliados*
-
 # Python (scripts de datos)
 __pycache__/
 *.pyc
 
-# Sistema operativo / editor
-.DS_Store
-Thumbs.db
-*.swp
-.vscode/
-.idea/
-
-# Local
+# Variables de entorno y logs
 .env
 .env.*
 *.log
+
+# Sistema operativo / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+.vscode/
+.idea/

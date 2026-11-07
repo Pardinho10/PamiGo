@@ -27,6 +27,9 @@ DATASETS = {
     'prestadores': 'listado-de-prestadores',
     # Catálogo auxiliar: no se publica, se usa para derivar la UGL de cada farmacia
     'ugls': 'agencias-ugls',
+    # El conjunto contiene dos listados: el de UGLs (con CAPs, agencias y bocas) y
+    # el de agencias locales. El de agencias se descarga por URL exacta.
+    'agencias': 'agencias-ugls',
 }
 
 
@@ -43,6 +46,12 @@ def download(url, destination):
     with open(destination, 'wb') as handle:
         handle.write(data)
     return len(data)
+
+
+# URL exacta del recurso en uso para el conjunto de agencias (no es el más reciente).
+FORCED_URLS = {
+    'agencias': 'http://datos.pami.org.ar/dataset/6fda9ef9-7dab-4a1a-879d-a963f05c7fde/resource/f6e33659-84c9-4e97-a271-f9023c8c891c/download/listado-de-agencias-.xlsx',
+}
 
 
 def newest_resource(resources):
@@ -72,7 +81,14 @@ def main():
     for name in targets:
         package_id = DATASETS[name]
         package = get_json(API + package_id)['result']
-        resource = newest_resource(package.get('resources', []))
+        if name in FORCED_URLS:
+            candidates = [r for r in package.get('resources', [])
+                          if r.get('url', '').rstrip('/') == FORCED_URLS[name].rstrip('/')]
+            if not candidates:
+                raise SystemExit(f'No se encontró el recurso de {name} en la API')
+            resource = candidates[0]
+        else:
+            resource = newest_resource(package.get('resources', []))
 
         url = resource['url']
         extension = os.path.splitext(url)[1].lower() or '.bin'

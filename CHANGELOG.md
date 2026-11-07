@@ -4,6 +4,52 @@ Todas las versiones notables de PamiGo se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.6.2] — 2026-11-04
+
+### Cambiado
+- Los botones de contacto muestran su texto ("Cómo llegar", "Buscar teléfono") desde 1200 px; por debajo
+  quedan como iconos.
+- Tabla de farmacias: en tablet se ocultan Provincia y Departamento para no pedir scroll horizontal.
+  Verificado sin scroll en 390, 768, 1024, 1280 y 1440 px.
+
+## [1.7.2] — 2026-11-07
+
+### Corregido
+- Los botones "Anterior" y "Siguiente" de las cuatro tablas cambiaban la variable de página pero no
+  volvían a paginar, por lo que la tabla seguía mostrando los mismos registros. Ahora cada vista expone
+  `goMedPage`, `goFarmPage`, `goPrestPage` y `goAgenPage`, que recalculan el tramo en el acto.
+
+## [1.7.1] — 2026-11-07
+
+### Cambiado
+- Los botones de contacto de Farmacias y Agencias comparten el mismo criterio: texto completo en
+  pantallas anchas, iconos en angostas. Se elimina el scroll horizontal en la tabla de Agencias.
+
+## [1.7.0] — 2026-11-07
+
+### Añadido
+- Vista "Agencias" con los puntos de atención de PAMI: agencias locales, sedes de UGL, CAPs y bocas de
+  atención (685 registros), con dirección, localidad, provincia, tipo y los botones de contacto de
+  Farmacias ("Cómo llegar" y "Buscar teléfono").
+- Filtros por provincia, localidad, tipo y búsqueda de texto, con paginación y fecha oficial en la barra
+  de resultados.
+- Una cuarta métrica en el hero y nueva ruta `/agencias` en el router y en las configuraciones de
+  despliegue.
+
+## [1.6.1] — 2026-11-04
+
+### Cambiado
+- Se retira la columna UGL de la tabla de farmacias: el padrón vigente no la informa y el valor derivado
+  del catálogo de agencias era ambiguo. Las seis columnas restantes se reparten con anchos proporcionales.
+- La tabla de farmacias deja de usar scroll horizontal en escritorio y en mobile.
+
+## [1.6.0] — 2026-11-04
+
+### Añadido
+- En la tabla de farmacias, columna Contacto con dos enlaces por farmacia: "Cómo llegar" (Google Maps)
+  y "Buscar teléfono" (búsqueda web). Se arman con los datos que ya informa el padrón oficial, sin guardar
+  números ni depender de fuentes externas.
+
 ## [1.5.1] — 2026-11-02
 
 ### Cambiado

@@ -32,7 +32,7 @@ const MIME = {
   '.woff2': 'font/woff2'
 };
 
-const ROUTES = new Set(['medicamentos', 'farmacias', 'prestadores', 'cartilla']);
+const ROUTES = new Set(['medicamentos', 'farmacias', 'prestadores', 'agencias', 'cartilla']);
 
 function safeJoin(urlPath) {
   const clean = decodeURIComponent(urlPath.split('?')[0]);
@@ -112,5 +112,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`PamiGo dev server → http://${HOST}:${PORT}`);
-  console.log('Rutas: / · /medicamentos · /farmacias · /prestadores · /cartilla');
+  console.log('Rutas: / · /medicamentos · /farmacias · /prestadores · /agencias · /cartilla');
 });
