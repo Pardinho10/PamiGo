@@ -57,7 +57,7 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background-color: #F6F0E5;
-  background-image: url("./bg-pattern.svg?v=1.7.1");
+  background-image: url("./bg-pattern.svg?v=1.7.2");
   background-size: 640px 640px;
   background-repeat: repeat;
   opacity: 0.5;

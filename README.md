@@ -7,7 +7,7 @@ construida sobre los conjuntos de datos abiertos publicados por el organismo.
 Es un sitio estático: no requiere backend, servidor de aplicaciones ni base de datos. La búsqueda, el
 filtrado y la paginación se resuelven íntegramente en el navegador.
 
-Versión actual: **1.7.1**
+Versión actual: **1.7.2**
 
 ![Vista de escritorio de PamiGo](docs/preview.png)
 

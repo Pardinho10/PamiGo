@@ -12,6 +12,13 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Tabla de farmacias: en tablet se ocultan Provincia y Departamento para no pedir scroll horizontal.
   Verificado sin scroll en 390, 768, 1024, 1280 y 1440 px.
 
+## [1.7.2] — 2026-11-07
+
+### Corregido
+- Los botones "Anterior" y "Siguiente" de las cuatro tablas cambiaban la variable de página pero no
+  volvían a paginar, por lo que la tabla seguía mostrando los mismos registros. Ahora cada vista expone
+  `goMedPage`, `goFarmPage`, `goPrestPage` y `goAgenPage`, que recalculan el tramo en el acto.
+
 ## [1.7.1] — 2026-11-07
 
 ### Cambiado

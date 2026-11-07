@@ -236,6 +236,13 @@ function pamiApp() {
       this.paginateAgen();
     },
 
+    goAgenPage(delta) {
+      const destino = Math.min(this.agenTotalPages, Math.max(1, this.agenPage + delta));
+      if (destino === this.agenPage) return;
+      this.agenPage = destino;
+      this.paginateAgen();
+    },
+
     paginateAgen() {
       const size = Number(this.agenPageSize) || 20;
       this.agenTotalPages = Math.max(1, Math.ceil(this.agenFiltered.length / size));
@@ -333,6 +340,13 @@ function pamiApp() {
       this.paginateMeds();
     },
 
+    goMedPage(delta) {
+      const destino = Math.min(this.medTotalPages, Math.max(1, this.medPage + delta));
+      if (destino === this.medPage) return;
+      this.medPage = destino;
+      this.paginateMeds();
+    },
+
     paginateMeds() {
       const size = Number(this.medPageSize) || 20;
       this.medTotalPages = Math.max(1, Math.ceil(this.medFiltered.length / size));
@@ -364,6 +378,13 @@ function pamiApp() {
 
     setPrestPageSize() {
       this.prestPage = 1;
+      this.paginatePrest();
+    },
+
+    goPrestPage(delta) {
+      const destino = Math.min(this.prestTotalPages, Math.max(1, this.prestPage + delta));
+      if (destino === this.prestPage) return;
+      this.prestPage = destino;
       this.paginatePrest();
     },
 
@@ -404,6 +425,13 @@ function pamiApp() {
 
     setFarmPageSize() {
       this.farmPage = 1;
+      this.paginateFarm();
+    },
+
+    goFarmPage(delta) {
+      const destino = Math.min(this.farmTotalPages, Math.max(1, this.farmPage + delta));
+      if (destino === this.farmPage) return;
+      this.farmPage = destino;
       this.paginateFarm();
     },
 
