@@ -1,13 +1,13 @@
 # PamiGo
 
-Aplicación web para consultar cobertura y copago de medicamentos, farmacias habilitadas y resumen de
-prestadores del Instituto Nacional de Servicios Sociales para Jubilados y Pensionados (PAMI), construida
-sobre los conjuntos de datos abiertos publicados por el organismo.
+Aplicación web para consultar cobertura y copago de medicamentos, farmacias habilitadas, prestadores y
+agencias locales del Instituto Nacional de Servicios Sociales para Jubilados y Pensionados (PAMI),
+construida sobre los conjuntos de datos abiertos publicados por el organismo.
 
 Es un sitio estático: no requiere backend, servidor de aplicaciones ni base de datos. La búsqueda, el
 filtrado y la paginación se resuelven íntegramente en el navegador.
 
-Versión actual: **1.6.2**
+Versión actual: **1.7.1**
 
 ![Vista de escritorio de PamiGo](docs/preview.png)
 
@@ -35,9 +35,9 @@ Versión actual: **1.6.2**
 - Departamento como columna de referencia territorial (reemplaza al código postal, que el padrón vigente
   ya no publica).
 - Acciones de contacto por farmacia: enlace a Google Maps ("Cómo llegar") y a la búsqueda web
-  ("Buscar teléfono"), armados con nombre, dirección, localidad y provincia. Muestran su texto desde 1200 px
-  y quedan como iconos en pantallas menores. No se almacena ningún número:
-  el enlace abre la búsqueda y el usuario toma el dato de la fuente.
+  ("Buscar teléfono"), armados con nombre, dirección, localidad y provincia. En pantallas anchas se lee el
+  texto; en angostas quedan como iconos. No se almacena ningún número: el enlace abre la búsqueda y el
+  usuario toma el dato de la fuente.
 - Paginación con el mismo comportamiento que la tabla de medicamentos.
 
 ### Prestadores
@@ -45,8 +45,14 @@ Versión actual: **1.6.2**
 - Búsqueda por UGL o especialidad.
 - Enlace a la cartilla oficial para la búsqueda de médicos, sanatorios y laboratorios habilitados.
 
+### Agencias
+- Puntos de atención oficiales: agencias locales, sedes de UGL, CAPs y bocas de atención.
+- Filtros por provincia, localidad, tipo y búsqueda de texto, con paginación.
+- Acciones de contacto iguales a las de Farmacias ("Cómo llegar" y "Buscar teléfono").
+- La fuente es de 2022 y su fecha se muestra en la interfaz, como el resto de los conjuntos.
+
 ### Navegación y URLs
-- URLs amigables sin extensión: `/medicamentos`, `/farmacias`, `/prestadores`, `/cartilla`.
+- URLs amigables sin extensión: `/medicamentos`, `/farmacias`, `/prestadores`, `/agencias`, `/cartilla`.
 - Cada pestaña tiene URL propia, título de documento propio y soporta enlaces directos.
 - Integración con el historial del navegador (botón atrás y adelante).
 - Redirección 301 desde `/pami.html` y desde cualquier `.html` hacia su versión sin extensión.
@@ -54,7 +60,7 @@ Versión actual: **1.6.2**
 
 ### Trazabilidad de los datos
 - Cada vista indica en su barra de resultados la fecha oficial del conjunto que muestra.
-- El pie resume la fecha de los tres conjuntos, y `data/meta.json` guarda origen y volumen de cada uno.
+- El pie resume la fecha de los cuatro conjuntos, y `data/meta.json` guarda origen y volumen de cada uno.
 
 ### Interfaz y accesibilidad
 - Diseño responsive verificado en 320, 390, 768 y 1280 px.
