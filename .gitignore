@@ -8,6 +8,15 @@ data/*.csv
 data/*.xls
 # Archivos con datos personales (nunca publicar)
 data/afiliados*
+# Python (scripts de datos)
+__pycache__/
+*.pyc
+
+# Variables de entorno y logs
+.env
+.env.*
+*.log
+
 # Sistema operativo / editor
 .DS_Store
 Thumbs.db
