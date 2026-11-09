@@ -39,6 +39,14 @@
 
 html {
   scroll-behavior: smooth;
+  /* el hero sangra a 100vw: evita el desborde de 15 px que agrega la barra clásica */
+  overflow-x: hidden;
+}
+
+@supports (overflow-x: clip) {
+  html {
+    overflow-x: clip;
+  }
 }
 
 body {
@@ -57,7 +65,7 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background-color: #F6F0E5;
-  background-image: url("./bg-pattern.svg?v=1.7.2");
+  background-image: url("./bg-pattern.svg?v=1.8.0");
   background-size: 640px 640px;
   background-repeat: repeat;
   opacity: 0.5;
@@ -67,7 +75,8 @@ body::before {
   position: relative;
   z-index: 1;
   max-width: 1140px;
-  padding-top: 1.5rem;
+  /* el hero va a sangre: arranca pegado al borde superior */
+  padding-top: 0;
   padding-bottom: 1.5rem;
 }
 
@@ -78,49 +87,73 @@ body::before {
 .hero {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius);
-  padding: clamp(1.25rem, 3vw, 2.4rem);
-  background: linear-gradient(135deg, #0B2344 0%, #14315A 55%, #45658D 100%);
+  /* sangrado a los bordes de la ventana sin romper el contenedor centrado */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-bottom: 0;
+  padding: clamp(2.2rem, 6vw, 3.8rem) 1.25rem clamp(4.5rem, 9vw, 6rem);
+  background:
+    radial-gradient(38rem 24rem at 82% -6%, rgba(145, 110, 175, 0.5), transparent 68%),
+    radial-gradient(30rem 20rem at 6% 104%, rgba(248, 149, 29, 0.22), transparent 70%),
+    linear-gradient(140deg, #0B2344 0%, #14315A 58%, #45658D 100%);
   color: #fff;
-  box-shadow: var(--shadow-md);
-  margin-bottom: 1.6rem;
 }
 
+/* patrón de píldoras dentro del hero, muy tenue */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("./bg-pattern.svg?v=1.8.0");
+  background-size: 620px 620px;
+  background-position: center top;
+  opacity: 0.07;
+}
+
+/* velo para que el texto respire sobre el patrón */
 .hero::after {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
-  background:
-    radial-gradient(26rem 18rem at 90% 4%, rgba(145, 110, 175, 0.55), transparent 65%),
-    radial-gradient(20rem 15rem at 4% 100%, rgba(248, 149, 29, 0.22), transparent 70%);
+  background: radial-gradient(60% 70% at 50% 45%, rgba(11, 35, 68, 0.55), transparent 75%);
 }
 
-.hero>* {
+.hero > * {
   position: relative;
   z-index: 1;
+}
+
+.hero-inner {
+  max-width: 44rem;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  justify-content: center;
+  gap: clamp(0.7rem, 2vw, 1.1rem);
 }
 
 .brand-mark {
-  width: clamp(2.7rem, 7vw, 3.4rem);
+  width: clamp(2.8rem, 6vw, 4.2rem);
   height: auto;
   flex: 0 0 auto;
   border-radius: var(--radius);
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.28));
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.35));
 }
 
 .brand-name {
   margin: 0;
-  font-size: clamp(1.85rem, 5.6vw, 2.55rem);
+  font-size: clamp(2.3rem, 6.4vw, 4.2rem);
   font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
 }
 
 .brand-name .dot {
@@ -128,92 +161,128 @@ body::before {
 }
 
 .brand-tag {
-  margin: 0.2rem 0 0;
-  font-size: 0.72rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.hero-lead {
-  margin: 0.9rem 0 0;
-  max-width: 34rem;
-  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
-  color: rgba(255, 255, 255, 0.84);
-}
-
-.hero-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.brand-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.7rem;
-  border-radius: var(--radius);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.brand-badge i {
-  color: var(--orange);
-}
-
-.brand-badge.is-ghost {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.82);
-}
-
-/* Métricas */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  padding: 0.6rem 0.7rem;
-  border-radius: var(--radius);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(6px);
-}
-
-.stat-value {
-  font-size: clamp(1rem, 2.6vw, 1.3rem);
-  font-weight: 900;
-  line-height: 1.1;
-  color: #fff;
-}
-
-.stat-label {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.68);
 }
 
+/* Hero sin banda de métricas (404): menos aire abajo */
+.hero--compact {
+  padding-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.hero-claim {
+  margin: clamp(1.1rem, 3vw, 1.7rem) 0 0;
+  font-size: clamp(1.15rem, 2.8vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.hero-lead {
+  margin: 0.7rem auto 0;
+  max-width: 34rem;
+  font-size: clamp(0.92rem, 2.1vw, 1.02rem);
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.hero-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: clamp(1.1rem, 2.6vw, 1.6rem) 0 0;
+  padding: 0.34rem 0.8rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.hero-source i {
+  color: var(--orange);
+  font-size: 0.9rem;
+}
+
 /* --------------------------------------------------------------------------
-   Tabs
+   Banda de métricas (monta sobre el pie del hero)
    -------------------------------------------------------------------------- */
 
+.stats-band {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: min(100% - 2.5rem, 61rem);
+  margin: clamp(-3.4rem, -7vw, -2.2rem) auto 1.9rem;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 18px 38px -26px rgba(92, 64, 32, 0.55);
+  text-align: left;
+}
+
+.stat-value {
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Ajustes de la banda en pantallas chicas */
+@media (max-width: 575.98px) {
+  .stats-band {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(100% - 1.5rem, 61rem);
+    margin-top: 0.9rem;
+    margin-bottom: 1.4rem;
+    gap: 0.6rem;
+  }
+
+  /* el quinto tab ocupa la fila completa para no quedar solo */
+  .nav-pills-custom .nav-item:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .stat-card {
+    padding: 0.7rem 0.8rem;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+}
+
+/* Barra de pestañas */
 .tabs-wrap {
   display: flex;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-top: 0.2rem;
+  margin-bottom: 1.7rem;
 }
 
 .nav-pills-custom {
@@ -945,15 +1014,6 @@ body::before {
     font-size: 0.79rem;
   }
 
-  .stat {
-    padding: 0.5rem 0.55rem;
-  }
-
-  .stat-label {
-    font-size: 0.56rem;
-    letter-spacing: 0.05em;
-  }
-
   /* Tablas en modo tarjeta: sin scroll horizontal */
   .table-modern {
     min-width: 0;
@@ -1085,7 +1145,6 @@ body::before {
 
 @media (min-width: 992px) {
   .app-shell {
-    padding-top: 2.2rem;
     padding-bottom: 2.2rem;
   }
 }

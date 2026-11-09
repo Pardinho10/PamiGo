@@ -12,6 +12,21 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Tabla de farmacias: en tablet se ocultan Provincia y Departamento para no pedir scroll horizontal.
   Verificado sin scroll en 390, 768, 1024, 1280 y 1440 px.
 
+## [1.8.0] — 2026-11-07
+
+### Cambiado
+- Rediseño del hero: pasa de tarjeta a banda editorial a sangre, con el patrón de píldoras en el interior,
+  wordmark a escala grande y una sola línea de posicionamiento.
+- Las cuatro métricas salen del hero y forman una banda de tarjetas blancas que monta sobre el borde
+  inferior en escritorio; en pantallas chicas quedan debajo, en grilla de dos columnas.
+- El quinto tab ocupa la fila completa en la barra de pestañas de mobile.
+
+### Corregido
+- Se restaura la regla de la barra de pestañas, que se había perdido al reescribir el bloque del hero, y
+  se fija el espaciado entre las pestañas y los paneles.
+- `html` con `overflow-x` recortado para que el sangrado a 100vw no genere desplazamiento horizontal en
+  navegadores con barra de desplazamiento clásica.
+
 ## [1.7.2] — 2026-11-07
 
 ### Corregido
