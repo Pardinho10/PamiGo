@@ -7,7 +7,7 @@ construida sobre los conjuntos de datos abiertos publicados por el organismo.
 Es un sitio estático: no requiere backend, servidor de aplicaciones ni base de datos. La búsqueda, el
 filtrado y la paginación se resuelven íntegramente en el navegador.
 
-Versión actual: **1.7.2**
+Versión actual: **1.8.0**
 
 ![Vista de escritorio de PamiGo](docs/preview.png)
 
@@ -63,7 +63,8 @@ Versión actual: **1.7.2**
 - El pie resume la fecha de los cuatro conjuntos, y `data/meta.json` guarda origen y volumen de cada uno.
 
 ### Interfaz y accesibilidad
-- Diseño responsive verificado en 320, 390, 768 y 1280 px.
+- Hero editorial a sangre con el patrón de píldoras y la banda de métricas montada sobre su borde inferior.
+- Diseño responsive verificado en 320, 390, 768, 1024, 1280 y 1440 px.
 - Por debajo de 576 px las tablas pasan a formato tarjeta con etiquetas por campo, sin scroll horizontal.
 - Etiquetas asociadas a los campos mediante `for`/`id`, `aria-label` en elementos gráficos y foco visible.
 - Contraste de texto ajustado sobre fondos oscuros y claros.
